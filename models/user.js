@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
   password: String, 
   name: String,
   surname: String,
-  verified: Boolean,
+  verified: {type: Boolean, default : false},
   verificationCode: Number,
   address: String,
   role: {type: String, default : 'user'},
@@ -23,7 +23,7 @@ userSchema.pre('save', async function(next) {
     if (!this.isModified('password')) {
       return next();
     }
-    const hashedPassword = await bcrypt.hash(this.password, saltRounds);
+    const hashedPassword = await bcrypt.hash(this.password, 10);
     this.password = hashedPassword;
     return next();
   } catch (error) {

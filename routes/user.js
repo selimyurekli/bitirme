@@ -1,8 +1,11 @@
 const express = require("express");
 
 const router = express.Router();
-const {loginApi} = require("../controller/user");
+const {login, signup, verifyUser} = require("../controller/user");
 
-router.get("/login", loginApi);
+router.post("/login", login);
+router.post("/signup", signup);
+router.post("/verify-user", verifyUser);
+
 
 module.exports = router;

@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const express = require('express')
+var bodyParser = require('body-parser')
+
 const app = express();
+app.use(bodyParser.json());
 
 const index = require('./routes/index')
 
