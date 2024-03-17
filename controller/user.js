@@ -4,7 +4,7 @@ const EmailSender = require('../utils/EmailSender');
 const TokenManager = require('../utils/TokenManager');
 
 const emailSender = new EmailSender();
-const tokenManger = new TokenManager();
+const tokenManager = new TokenManager();
 
 const login = async function(req,res,next){
     try {

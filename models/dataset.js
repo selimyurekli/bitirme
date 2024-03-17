@@ -4,6 +4,7 @@ const datasetSchema = new mongoose.Schema({
   name: String,
   extension: String,
   url: String,
+  anonym_url: String,
   contentHTML: String,
   fields: [String],
   fieldDescriptions: [String],

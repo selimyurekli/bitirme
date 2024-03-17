@@ -14,10 +14,19 @@ class TokenManager {
   }
 
   verifyToken(token) {
+    var token = token.split("Bearer ")[1];
+    
     try {
-      const decoded = jwt.verify(token, this.secretKey);
-      return decoded.userId;
+      if (typeof token !== 'undefined' && token !== null) {
+        const decoded = jwt.verify(token, this.secretKey);
+        console.log("ASDAD",decoded);
+        return decoded.userId;
+      } else {
+          return null;
+      }
+      
     } catch (error) {
+      console.log(token)
       return null;
     }
   }

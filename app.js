@@ -1,20 +1,22 @@
 const mongoose = require('mongoose');
 const express = require('express')
 var bodyParser = require('body-parser')
+var multer = require('multer');
+var upload = multer();
 
 const app = express();
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended : true}));
+app.use(upload.any());
+
 
 const index = require('./routes/index')
 
 require('./db');
 
-const User = require('./models/user');
-const Project = require('./models/project');
-const Proposal = require('./models/proposal');
-const Dataset = require('./models/dataset');
-const Tag = require('./models/tag');
-const Institution = require('./models/institution');
+
+//cors kısmını halledelim...
+
 
 app.use("/api", index);
 
