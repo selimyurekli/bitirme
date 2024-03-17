@@ -1,6 +1,9 @@
 const Proposal = require('../models/proposal');
 const User = require('../models/user');
 const Project = require('../models/project');
+const TokenManager = require('../utils/TokenManager');
+
+const tokenManager = new TokenManager();
 
 
 const createProposal = async function(req, res, next) {
@@ -16,18 +19,19 @@ const createProposal = async function(req, res, next) {
             res.status(400).json({ error: 'Some or all users are not found in db.' });
         }
 
+
         const newProposal = new Proposal({
             proposalText: req.body.proposalText,
             potentialResearchBenefits: req.body.potentialResearchBenefits,
             institutionId: req.body.institutionId,
             projectId: req.body.projectId,
             applicatorId: proposalCreator._id,
-            applicantUserIds: applicantUserIds
+            applicantUserIds: collaborators
         });
-    
+
         const savedProposal = await newProposal.save();
         const project = await Project.findById(savedProposal.projectId);
-        project.proposalIds.push([savedProposal]);
+        project.proposalIds.push(savedProposal);
         await project.save();
 
         res.status(201).json(savedProposal);
@@ -74,7 +78,6 @@ const evaluateProposal = async function(req, res, next) {
     try{
         const token = (req.headers.authorization);
         const owner = tokenManager.verifyToken(token);
-    
         const proposalId = req.body.proposalId;
         if(req.body.verified != "accept" && req.body.verified != "reject"){
             return res.status(400).json({ message: 'only words accept or reject are valid.' });
@@ -89,13 +92,14 @@ const evaluateProposal = async function(req, res, next) {
         if(!project) {
             return res.status(400).json({ message: 'project not found.' });
         }
-    
-        if(owner._id != project.ownerIds[0]){
+
+        if(owner != project.ownerIds[0]){
             res.status(401).json({ message: 'you are not allowed.' });
         }
     
+        //hata
         project.userIds.push(proposal.applicantUserIds);
-        project.userIds.push([proposal.applicatorId]);
+        project.userIds.push(proposal.applicatorId);
     
         proposal.verified = req.body.verified;
         proposal.proposalReviewText = req.body.proposalReviewText;
@@ -122,8 +126,8 @@ const listProposals = async function(req, res, next) {
         if(!project) {
             return res.status(400).json({ message: 'project not found.' });
         }
-        const proposals = project.proposalIds; 
-
+        let proposals = project.proposalIds; 
+        proposals = await Proposal.find({ _id: { $in: proposals }, verified: req.body.verified});
         return res.status(401).json({proposals});
     } catch (error) {
         console.error(error);
