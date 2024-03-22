@@ -16,28 +16,29 @@ const createProposal = async function(req, res, next) {
         const collaborators = await User.find({ email: { $in: applicantUserIds } }, '_id');
 
         if (collaborators.length != applicantUserIds.length) {
-            res.status(400).json({ error: 'Some or all users are not found in db.' });
+            return res.status(400).json({ error: 'Some or all users are not found in db.' });
         }
-
 
         const newProposal = new Proposal({
             proposalText: req.body.proposalText,
             potentialResearchBenefits: req.body.potentialResearchBenefits,
-            institutionId: req.body.institutionId,
             projectId: req.body.projectId,
-            applicatorId: proposalCreator._id,
+            applicatorId: proposalCreator,
             applicantUserIds: collaborators
         });
-
+        
         const savedProposal = await newProposal.save();
         const project = await Project.findById(savedProposal.projectId);
+        const user = await User.findById(savedProposal.applicatorId);
+        user.proposalIds.push(savedProposal);
         project.proposalIds.push(savedProposal);
+        await user.save();
         await project.save();
 
-        res.status(201).json(savedProposal);
+        return res.status(201).json(savedProposal);
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: 'Server Error' });
+            return res.status(500).json({ message: 'Server Error' });
         }
 }
 
@@ -50,7 +51,7 @@ const updateProposal = async function(req, res, next) {
         const collaborators = await User.find({ email: { $in: applicantUserIds } }, '_id');
 
         if (collaborators.length != applicantUserIds.length) {
-            res.status(400).json({ error: 'Some or all users are not found in db.' });
+            return res.status(400).json({ error: 'Some or all users are not found in db.' });
         }
 
         const proposalId = req.body.proposalId;
@@ -94,7 +95,7 @@ const evaluateProposal = async function(req, res, next) {
         }
 
         if(owner != project.ownerIds[0]){
-            res.status(401).json({ message: 'you are not allowed.' });
+            return res.status(401).json({ message: 'you are not allowed.' });
         }
     
         //hata
@@ -108,7 +109,7 @@ const evaluateProposal = async function(req, res, next) {
         await project.save();    
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Server Error' });
+        return res.status(500).json({ message: 'Server Error' });
     }
 }
 
@@ -116,22 +117,28 @@ const listProposals = async function(req, res, next) {
     try{
         const token = (req.headers.authorization);
         const owner = tokenManager.verifyToken(token);
-    
-        if(req.body.verified != "accept" && req.body.verified != "none" && req.body.verified != "reject"){
-            return res.status(400).json({ message: 'only words accept, none or reject are valid.' });
-        }
         const projectId = req.body.projectId;
-        const project = await Project.findById(projectId);
-    
-        if(!project) {
-            return res.status(400).json({ message: 'project not found.' });
+        if (projectId === null || projectId === undefined || projectId === 'undefined') {
+            const user = await User.findById(owner);
+            let proposals = user.proposalIds; 
+            proposals = await Proposal.find({ _id: { $in: proposals }});
+            return res.status(200).json({proposals});
         }
-        let proposals = project.proposalIds; 
-        proposals = await Proposal.find({ _id: { $in: proposals }, verified: req.body.verified});
-        return res.status(401).json({proposals});
+        else {
+            
+            const project = await Project.findById(projectId);
+        
+            if(!project) {
+                return res.status(400).json({ message: 'project not found.' });
+            }
+            let proposals = project.proposalIds; 
+            proposals = await Proposal.find({ _id: { $in: proposals }});
+            return res.status(200).json({proposals});
+        }
+        
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Server Error' });
+        return res.status(500).json({ message: 'Server Error' });
     }
 
 }

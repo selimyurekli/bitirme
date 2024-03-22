@@ -11,6 +11,8 @@ function anonymize(jsonData, methodsToAnonymize, filePath) {
                     case 'mask':
                         record[column] = maskString(record[column]);
                         break;
+                    case 'none':
+                        break;    
                     default:
                         console.error('Invalid anonymization method:', methodsToAnonymize[column]);
                         break;

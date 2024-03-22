@@ -6,7 +6,8 @@ const User = require('../models/user');
 const Tag = require('../models/tag'); 
 const {anonymizeFile} = require('../anonymize')
 const TokenManager = require('../utils/TokenManager');
-const fs = require('fs')
+const fs = require('fs');
+const { default: mongoose } = require('mongoose');
 
 const tokenManager = new TokenManager();
 
@@ -16,41 +17,40 @@ function getFileExtension(filename) {
 
 const createProject = async function(req, res, next) {
     try {
-        const token = (req.headers.authorization);
-        const userEmails = req.body.userEmails;
-        const ownerId = tokenManager.verifyToken(token);
-
-        const collaborators = await User.find({ email: { $in: userEmails } }, '_id');
-        if (collaborators.length != userEmails.length) {
-            res.status(400).json({ error: 'Some or all users are not found in db.' });
-        }
-
-        const ownerUser = await User.findById(ownerId, '_id');
-
+        
+        const id = req.authanticatedUserId;
+        const authUser = await User.findById(id, '_id');
         const tags = req.body.tags;
         const foundTags = await Tag.find({ name: { $in: tags } });
-
         if (tags.length != foundTags.length) {
-            res.status(400).json({ error: 'Tags are not found in db.' });
+            return res.status(400).json({ error: 'Tags are not found in db.' });
         }
 
-    
+        let collaborators;
+        if(req.body.isPublic==false){
+            const userEmails = req.body.userEmails;
+            collaborators = await User.find({ email: { $in: userEmails } }, '_id');
+            if (collaborators.length != userEmails.length) {
+                return res.status(400).json({ error: 'Some or all users are not found in db.' });
+            }
+        }
+        
         const newProject = new Project({
           name: req.body.name,
           description: req.body.description,
           abstract: req.body.abstract,
           isPublic: req.body.isPublic,
-          ownerIds: [ownerUser], 
-          userIds: collaborators,
+          ownerIds: id, 
+          userIds: !req.body.isPublic ? collaborators : null,
         });
         //TODO: send mail to collabrators.
 
         const savedProject = await newProject.save();
     
-        res.status(201).json({"projectId" : savedProject._id});
+        return res.status(201).json({"projectId" : savedProject._id});
       } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
       }
 }
 
@@ -74,8 +74,6 @@ const createDatasetAndAdd2Project = async function(req, res, next) {
         const dataset = new Dataset({
             name: req.body.name,
             extension: extension,
-            fields: req.body.fields.split(','),
-            fieldDescriptions: req.body.fieldDescriptions.split(','),
             projectId: projectId
         });
         const counter = project.datasetIds.length+1;
@@ -92,6 +90,7 @@ const createDatasetAndAdd2Project = async function(req, res, next) {
                 console.log('File saved successfully:', filePath);
             }
         });
+        
         dataset.url = filePath;
         dataset.anonym_url = anonymFilePath;
         
@@ -100,21 +99,21 @@ const createDatasetAndAdd2Project = async function(req, res, next) {
         await project.save();
         await dataset.save();
 
-        const methodsToAnonymizeCols = req.body.methodsToAnonymizeCols.split(',');
-        const methodsToAnonymizeTech = req.body.methodsToAnonymizeTech.split(',');
+        const columnNames = req.body.columnNames.split(',');
+        const columnActions = req.body.columnActions.split(',');
 
         const anonymizationMethods = {};
-        methodsToAnonymizeCols.forEach((column, index) => {
-            anonymizationMethods[column] = methodsToAnonymizeTech[index];
+        columnNames.forEach((column, index) => {
+            anonymizationMethods[column] = columnActions[index];
         });
 
         anonymizeFile(filePath, anonymizationMethods, anonymFilePath);
 
-        res.status(200).json({"message" : "Dataset added succesfully",
+        return res.status(200).json({"message" : "Dataset added succesfully",
                               dataset});
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
  

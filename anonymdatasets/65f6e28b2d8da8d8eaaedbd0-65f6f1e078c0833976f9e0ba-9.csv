@@ -1,7 +1,0 @@
-name,surname,address,country,code
-masked_ NJ,hashed_Doe,120 jefferson st.,Riverside, 08075
-masked_ PA,hashed_McGinnis,220 hobo Av.,Phila,09119
-masked_ NJ,hashed_Repici,120 Jefferson St.,Riverside,08075
-masked_SD,hashed_Tyler,"7452 Terrace ""At the Plaza"" road",SomeTown, 91234
-masked_ SD,hashed_Blankman,,SomeTown, 00298
-masked_CO,hashed_Jet,"9th, at Terrace plc",Desert City,00123

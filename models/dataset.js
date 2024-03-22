@@ -6,8 +6,6 @@ const datasetSchema = new mongoose.Schema({
   url: String,
   anonym_url: String,
   contentHTML: String,
-  fields: [String],
-  fieldDescriptions: [String],
   projectId: { type: mongoose.Schema.Types.ObjectId, ref: 'Project' }
 });
 

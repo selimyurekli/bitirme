@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const express = require('express')
 var bodyParser = require('body-parser')
 var multer = require('multer');
+var cors = require('cors');
+
 var upload = multer();
 
 const app = express();
@@ -15,9 +17,7 @@ const index = require('./routes/index')
 require('./db');
 
 
-//cors kısmını halledelim...
-
-
+app.use(cors());
 app.use("/api", index);
 
 app.listen(3838,()=>{
