@@ -2,6 +2,7 @@ const Proposal = require('../models/proposal');
 const User = require('../models/user');
 const Project = require('../models/project');
 const TokenManager = require('../utils/TokenManager');
+const { response } = require('express');
 
 const tokenManager = new TokenManager();
 
@@ -9,8 +10,9 @@ const tokenManager = new TokenManager();
 const createProposal = async function(req, res, next) {
     try {
 
-        const token = (req.headers.authorization);
-        const proposalCreator = tokenManager.verifyToken(token);
+        const id = req.authanticatedUserId;
+        const authUser = await User.findById(id);
+        
         const applicantUserIds = req.body.applicantUserIds;
 
         const collaborators = await User.find({ email: { $in: applicantUserIds } }, '_id');
@@ -23,16 +25,15 @@ const createProposal = async function(req, res, next) {
             proposalText: req.body.proposalText,
             potentialResearchBenefits: req.body.potentialResearchBenefits,
             projectId: req.body.projectId,
-            applicatorId: proposalCreator,
+            applicatorId: authUser._id,
             applicantUserIds: collaborators
         });
         
         const savedProposal = await newProposal.save();
         const project = await Project.findById(savedProposal.projectId);
-        const user = await User.findById(savedProposal.applicatorId);
-        user.proposalIds.push(savedProposal);
+        authUser.proposalIds.push(savedProposal);
         project.proposalIds.push(savedProposal);
-        await user.save();
+        await authUser.save();
         await project.save();
 
         return res.status(201).json(savedProposal);
@@ -77,36 +78,47 @@ const updateProposal = async function(req, res, next) {
 
 const evaluateProposal = async function(req, res, next) {
     try{
-        const token = (req.headers.authorization);
-        const owner = tokenManager.verifyToken(token);
+        const id = req.authanticatedUserId;
+        const owner = await User.findById(id);
         const proposalId = req.body.proposalId;
+        
         if(req.body.verified != "accept" && req.body.verified != "reject"){
             return res.status(400).json({ message: 'only words accept or reject are valid.' });
         }
 
         const proposal = await Proposal.findById(proposalId);
-        if(!proposal) {
-            return res.status(400).json({ message: 'proposal not found.' });
+        if(!proposal || proposal.verified != "none") {
+            return res.status(400).json({ message: 'proposal not found or already responded.' });
         }
         const project = await Project.findById(proposal.projectId);
+        
     
         if(!project) {
             return res.status(400).json({ message: 'project not found.' });
         }
 
-        if(owner != project.ownerIds[0]){
+        if (id != project.ownerId){
             return res.status(401).json({ message: 'you are not allowed.' });
         }
     
-        //hata
-        project.userIds.push(proposal.applicantUserIds);
-        project.userIds.push(proposal.applicatorId);
     
         proposal.verified = req.body.verified;
         proposal.proposalReviewText = req.body.proposalReviewText;
-    
-        await proposal.save();
-        await project.save();    
+        
+        if(proposal.verified == 'accept'){
+
+            if (proposal.applicantUserIds.length != 0){
+                project.userIds.push([proposal.applicantUserIds]);
+            }
+            if (!proposal.applicatorId in project.userIds){
+                project.userIds.push(proposal.applicatorId);
+            }
+        }
+        
+        proposal2 = await proposal.save();
+        project2 = await project.save();
+
+        return res.status(200).json({proposal2, project2})
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Server Error' });
@@ -115,32 +127,38 @@ const evaluateProposal = async function(req, res, next) {
 
 const listProposals = async function(req, res, next) {
     try{
-        const token = (req.headers.authorization);
-        const owner = tokenManager.verifyToken(token);
-        const projectId = req.body.projectId;
-        if (projectId === null || projectId === undefined || projectId === 'undefined') {
-            const user = await User.findById(owner);
-            let proposals = user.proposalIds; 
-            proposals = await Proposal.find({ _id: { $in: proposals }});
-            return res.status(200).json({proposals});
-        }
-        else {
-            
-            const project = await Project.findById(projectId);
+        const id = req.authanticatedUserId;
+        const owner = await User.findById(id);
+
+        let response = {}
+
+        let proposalsSent = owner.proposalIds; 
+        proposalsSent = await Proposal.find({ _id: { $in: proposalsSent }});
         
-            if(!project) {
-                return res.status(400).json({ message: 'project not found.' });
-            }
-            let proposals = project.proposalIds; 
-            proposals = await Proposal.find({ _id: { $in: proposals }});
-            return res.status(200).json({proposals});
+        response["sentProposals"] = proposalsSent;
+        
+        const foundProjects = await Project.find({ _id: { $in: owner.projectIds } });
+
+        var receivedProposals = [];
+        for (const project of foundProjects) {
+            const proposalIds = project.proposalIds;
+            const foundProposals = await Proposal.find({ _id: { $in: proposalIds }, verified : "none" }, );
+            receivedProposals.push({
+                "projectId" : project['_id'],
+                "projectName" : project['name'],
+                "projectDescription": project['description'],
+                foundProposals
+            })
         }
+
+        response["receivedProposals"] = receivedProposals;
+        
+        return res.status(200).json(response);
         
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Server Error' });
     }
-
 }
 
 

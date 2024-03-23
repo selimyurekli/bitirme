@@ -19,7 +19,7 @@ const createProject = async function(req, res, next) {
     try {
         
         const id = req.authanticatedUserId;
-        const authUser = await User.findById(id, '_id');
+        const authUser = await User.findById(id).select("-password");
         const tags = req.body.tags;
         const foundTags = await Tag.find({ name: { $in: tags } });
         if (tags.length != foundTags.length) {
@@ -40,14 +40,20 @@ const createProject = async function(req, res, next) {
           description: req.body.description,
           abstract: req.body.abstract,
           isPublic: req.body.isPublic,
-          ownerIds: id, 
+          ownerId: authUser._id, 
           userIds: !req.body.isPublic ? collaborators : null,
+          tagIds: foundTags
         });
         //TODO: send mail to collabrators.
+        //TODO: add collabrators to a list.
 
+
+        console.log(authUser);
         const savedProject = await newProject.save();
+        authUser.projectIds.push(savedProject._id);
+        await authUser.save();
     
-        return res.status(201).json({"projectId" : savedProject._id});
+        return res.status(201).json({"projectId" : savedProject});
       } catch (error) {
         console.error(error);
         return res.status(500).json({ error: 'Internal Server Error' });
@@ -117,6 +123,17 @@ const createDatasetAndAdd2Project = async function(req, res, next) {
     }
 };
  
+const detailProject = async function (req, res, next) {
+    try {
+        
+
+        return res.status(201).json({ "detailProject":"service not implemented" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
 
 
 

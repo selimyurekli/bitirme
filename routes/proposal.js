@@ -6,6 +6,6 @@ const router = express.Router();
 router.post('/create', createProposal)
 router.post('/update', updateProposal)
 router.post('/evaluate', evaluateProposal)
-router.post('/list', listProposals)
+router.get('/list', listProposals)
 
 module.exports = router;

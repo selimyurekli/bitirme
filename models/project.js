@@ -11,7 +11,6 @@ const projectSchema = new mongoose.Schema({
   tagIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }],
   userIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   ownerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  resourceCreatorIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   proposalIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Proposal' }]
 });
 

@@ -25,7 +25,7 @@ const login = async function(req,res,next){
 
         const token = tokenManager.generateToken(user._id);
         res.cookie('token', token, { httpOnly: true });
-        res.json({ message: 'Login successful', token });
+        res.status(200).json({ message: 'Login successful', token });
         
       } catch (error) {
         console.error(error);
@@ -76,7 +76,7 @@ const verifyUser = async function(req, res, next) {
         user.verified = true;
         await user.save();
 
-        res.json({ message: 'User verified successfully' });
+        res.status(200).json({ message: 'User verified successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server Error' });
@@ -84,4 +84,27 @@ const verifyUser = async function(req, res, next) {
 }
 
 
-module.exports = {login, signup, verifyUser}
+const userDetail = async function (req, res, next) {
+  try {
+    
+    const id = req.authanticatedUserId;
+    var authUser = await User.findById(id).select('-password');;
+    
+    if (!authUser) {
+      return res.status(400).json({ message: 'User not found.' });
+    }
+
+    res.status(200).json({user : authUser });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+}
+
+//forgot password
+
+//update fields
+
+
+
+module.exports = { login, signup, verifyUser, userDetail}
