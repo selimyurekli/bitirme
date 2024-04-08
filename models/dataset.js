@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const datasetSchema = new mongoose.Schema({
   name: String,
+  description: String,
   extension: String,
   url: String,
   anonym_url: String,

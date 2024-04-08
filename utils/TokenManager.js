@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 class TokenManager {
   constructor() {
     this.secretKey = "Selim12345";
-    this.expiresIn = '1h'
+    this.expiresIn = '1y'
   }
 
   generateToken(userId) {

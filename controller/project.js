@@ -82,6 +82,7 @@ const createDatasetAndAdd2Project = async function(req, res, next) {
 
         const dataset = new Dataset({
             name: req.body.name,
+            description: req.body.description,
             extension: extension,
             projectId: projectId
         });
@@ -186,4 +187,40 @@ const previewDataset = async function (req, res, next) {
     }
 }
 
+function summarizeData(data) {
+    const summary = {};
+
+    data.forEach(item => {
+
+        Object.keys(item).forEach(key => {
+
+            if (!summary[key]) {
+                summary[key] = {
+                    count: 0,
+                    sum: 0,
+                    min: Infinity,
+                    max: -Infinity,
+                    average: 0
+                };
+            }
+
+            const value = item[key];
+            if (typeof value === 'number') {
+                summary[key].sum += value;
+                summary[key].min = Math.min(summary[key].min, value);
+                summary[key].max = Math.max(summary[key].max, value);
+            }
+
+            summary[key].count++;
+        });
+    });
+
+    Object.keys(summary).forEach(key => {
+        if (summary[key].count > 0) {
+            summary[key].average = summary[key].sum / summary[key].count;
+        }
+    });
+
+    return summary;
+}
 module.exports = { createProject, createDatasetAndAdd2Project, detailProject, exploreProjects, previewDataset}

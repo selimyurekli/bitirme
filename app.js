@@ -13,8 +13,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(upload.any());
 
-app.use('/datasets', datasetFolderAccessController ,express.static(path.join(__dirname, 'datasets')));
-app.use('/anonymdatasets', datasetFolderAccessController, express.static(path.join(__dirname, 'anonymdatasets')));
+app.use('/datasets', /*datasetFolderAccessController,*/ express.static(path.join(__dirname, 'datasets')));
+app.use('/anonymdatasets', /*datasetFolderAccessController,*/ express.static(path.join(__dirname, 'anonymdatasets')));
 
 
 const index = require('./routes/index')
