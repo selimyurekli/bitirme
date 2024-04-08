@@ -44,7 +44,7 @@ const createProject = async function(req, res, next) {
           abstract: req.body.abstract,
           isPublic: req.body.isPublic,
           ownerId: authUser._id, 
-          userIds: !req.body.isPublic ? collaborators : null,
+          userIds: !req.body.isPublic ? collaborators : [],
           tagIds: foundTags
         });
         //TODO: send mail to collabrators.

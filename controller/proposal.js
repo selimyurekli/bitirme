@@ -16,7 +16,7 @@ const createProposal = async function(req, res, next) {
         const applicantUserIds = req.body.applicantUserIds;
 
         const collaborators = await User.find({ email: { $in: applicantUserIds } }, '_id');
-
+        
         if (collaborators.length != applicantUserIds.length) {
             return res.status(400).json({ error: 'Some or all users are not found in db.' });
         }
@@ -106,7 +106,6 @@ const evaluateProposal = async function(req, res, next) {
         proposal.proposalReviewText = req.body.proposalReviewText;
         proposal.updated_at = Date.now();
         if(proposal.verified == 'accept'){
-
             if (proposal.applicantUserIds.length != 0){
                 project.userIds.push([proposal.applicantUserIds]);
             }
