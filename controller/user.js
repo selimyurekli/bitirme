@@ -36,7 +36,7 @@ const login = async function(req,res,next){
 
 const signup = async function(req,res,next){
     try {
-        const { email, password, name, surname, address, institutionId } = req.body;
+        const { email, password, name, surname, address, institutionId, role} = req.body;
 
         const institution = await Institution.findById(institutionId);
 
@@ -57,12 +57,12 @@ const signup = async function(req,res,next){
 
         const verificationCode = Math.floor(100000 + Math.random() * 900000); // Generate verification code
 
-        user = new User({email, password, name, phone, surname, address, verificationCode});
+        user = new User({ email, password, name, surname, address, verificationCode, role, role});
+        user.institutionId = institution;
         const isSuccess = emailSender.sendEmail(email, "Verification", "Your verification code is " + verificationCode + ".")
         if(!isSuccess){
             throw new Error("Error when sending email.");
         };
-    
         await user.save();
         res.status(201).json({ message: 'User created successfully' });
       } catch (error) {

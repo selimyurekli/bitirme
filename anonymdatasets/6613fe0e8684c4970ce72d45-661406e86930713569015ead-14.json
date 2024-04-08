@@ -1,0 +1,22 @@
+[
+  {
+    "col1": "masked_hashed_col1_data1",
+    "col2": "hashed_masked_col2_data1",
+    "col3": "col3_data1"
+  },
+  {
+    "col1": "masked_hashed_col1_data2",
+    "col2": "hashed_masked_col2_data2",
+    "col3": "col3_data2"
+  },
+  {
+    "col1": "masked_hashed_col1_data3",
+    "col2": "hashed_masked_col2_data3",
+    "col3": "col3_data3"
+  },
+  {
+    "col1": "masked_hashed_col1_data4",
+    "col2": "hashed_masked_col2_data4",
+    "col3": "col3_data4"
+  }
+]

@@ -143,19 +143,20 @@ const detailProject = async function (req, res, next) {
 
 const exploreProjects = async function (req, res, next) {
     try {
-        let { page, limit, sortBy, sortOrder, search } = req.query;
+        let { page, limit, sortBy, sortOrder, search, tags } = req.query;
 
         page = parseInt(page) || 1;
         limit = parseInt(limit) || 10;
         sortBy = sortBy || 'createdAt'; 
         sortOrder = sortOrder === 'desc' ? -1 : 1;
         search = search || '';
+        tags = tags || '';
 
         const searchQuery = {
             $or: [
                 { name: { $regex: search, $options: 'i' } }, 
                 { description: { $regex: search, $options: 'i' } },
-                { 'datasetIds.name': { $regex: search, $options: 'i' } } // Case-insensitive
+                { 'datasetIds.name': { $regex: search, $options: 'i' } } // bu kısım çalışmıyor
             ]
         };
 
