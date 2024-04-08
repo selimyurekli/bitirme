@@ -62,7 +62,8 @@ const updateProposal = async function(req, res, next) {
             institutionId: req.body.institutionId,
             projectId: req.body.projectId,
             applicatorId: proposalCreator._id,
-            applicantUserIds: applicantUserIds
+            applicantUserIds: applicantUserIds,
+            updated_at: Date.now()
         }, { new: true });
 
         if (!updatedProposal) {
@@ -82,7 +83,7 @@ const evaluateProposal = async function(req, res, next) {
         const owner = await User.findById(id);
         const proposalId = req.body.proposalId;
         
-        if(req.body.verified != "accept" && req.body.verified != "reject"){
+        if(req.body.verified != "accept" && req.body.verified != "reject"){ //revision isteyebilir
             return res.status(400).json({ message: 'only words accept or reject are valid.' });
         }
 
@@ -101,10 +102,9 @@ const evaluateProposal = async function(req, res, next) {
             return res.status(401).json({ message: 'you are not allowed.' });
         }
     
-    
         proposal.verified = req.body.verified;
         proposal.proposalReviewText = req.body.proposalReviewText;
-        
+        proposal.updated_at = Date.now();
         if(proposal.verified == 'accept'){
 
             if (proposal.applicantUserIds.length != 0){
@@ -118,7 +118,7 @@ const evaluateProposal = async function(req, res, next) {
         proposal2 = await proposal.save();
         project2 = await project.save();
 
-        return res.status(200).json({proposal2, project2})
+        return res.status(200).json({message: "You successfully evaluated proposal"});
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Server Error' });
@@ -133,7 +133,9 @@ const listProposals = async function(req, res, next) {
         let response = {}
 
         let proposalsSent = owner.proposalIds; 
-        proposalsSent = await Proposal.find({ _id: { $in: proposalsSent }});
+        proposalsSent = await Proposal.find({ _id: { $in: proposalsSent }})
+                .sort({ ['updated_at']: 'desc' })
+
         
         response["sentProposals"] = proposalsSent;
         

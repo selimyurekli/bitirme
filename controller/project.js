@@ -8,6 +8,8 @@ const {anonymizeFile} = require('../anonymize')
 const TokenManager = require('../utils/TokenManager');
 const fs = require('fs');
 const { default: mongoose } = require('mongoose');
+const path = require('path');
+
 
 const tokenManager = new TokenManager();
 
@@ -20,6 +22,7 @@ const createProject = async function(req, res, next) {
         
         const id = req.authanticatedUserId;
         const authUser = await User.findById(id).select("-password");
+        console.log(authUser)
         const tags = req.body.tags;
         const foundTags = await Tag.find({ name: { $in: tags } });
         if (tags.length != foundTags.length) {
@@ -125,16 +128,62 @@ const createDatasetAndAdd2Project = async function(req, res, next) {
  
 const detailProject = async function (req, res, next) {
     try {
-        
+        var project = await Project.findById(req.body.projectId).populate("datasetIds");
+        if(!project){
+            return res.status(400).json({ error: 'Project not found.' });
+        }
 
-        return res.status(201).json({ "detailProject":"service not implemented" });
+        return res.status(200).json({ project });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
+const exploreProjects = async function (req, res, next) {
+    try {
+        let { page, limit, sortBy, sortOrder, search } = req.query;
 
+        page = parseInt(page) || 1;
+        limit = parseInt(limit) || 10;
+        sortBy = sortBy || 'createdAt'; 
+        sortOrder = sortOrder === 'desc' ? -1 : 1;
+        search = search || '';
 
+        const searchQuery = {
+            $or: [
+                { name: { $regex: search, $options: 'i' } }, 
+                { description: { $regex: search, $options: 'i' } },
+                { 'datasetIds.name': { $regex: search, $options: 'i' } } // Case-insensitive
+            ]
+        };
 
-module.exports = {createProject, createDatasetAndAdd2Project}
+        const projects = await Project.find(searchQuery)
+            .populate("datasetIds tagIds")
+            .sort({ [sortBy]: sortOrder })
+            .skip((page - 1) * limit)
+            .limit(limit);
+
+        return res.status(200).json({ projects });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+} 
+
+const previewDataset = async function (req, res, next) {
+    try {
+        var dataset = await Dataset.findById(req.body.datasetId);
+        
+        if (!dataset) {
+            return res.status(400).json({ error: 'Dataset not found.' });
+        }
+        
+        return res.status(200).json({ dataset });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+module.exports = { createProject, createDatasetAndAdd2Project, detailProject, exploreProjects, previewDataset}

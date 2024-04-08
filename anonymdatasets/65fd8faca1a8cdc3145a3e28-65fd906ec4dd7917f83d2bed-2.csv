@@ -1,7 +1,0 @@
-name,surname,address,city,country,code
-masked_John,hashed_Doe,120 jefferson st.,Riverside, NJ, 08075
-masked_Jack,hashed_McGinnis,220 hobo Av.,Phila, PA,09119
-"masked_John ""Da Man""",hashed_Repici,120 Jefferson St.,Riverside, NJ,08075
-masked_Stephen,hashed_Tyler,"7452 Terrace ""At the Plaza"" road",SomeTown,SD, 91234
-masked_,hashed_Blankman,,SomeTown, SD, 00298
-"masked_Joan ""the bone"", Anne",hashed_Jet,"9th, at Terrace plc",Desert City,CO,00123

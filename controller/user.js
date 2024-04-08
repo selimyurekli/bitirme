@@ -2,6 +2,7 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const EmailSender = require('../utils/EmailSender');
 const TokenManager = require('../utils/TokenManager');
+const Institution = require('../models/institution');
 
 const emailSender = new EmailSender();
 const tokenManager = new TokenManager();
@@ -35,7 +36,13 @@ const login = async function(req,res,next){
 
 const signup = async function(req,res,next){
     try {
-        const { email, password, phone, name, surname, address } = req.body;
+        const { email, password, name, surname, address, institutionId } = req.body;
+
+        const institution = await Institution.findById(institutionId);
+
+        if(!institution){
+          return res.status(400).json({ message: 'Invalid institution' });
+        }  
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

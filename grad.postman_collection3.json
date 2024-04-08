@@ -1,0 +1,445 @@
+{
+	"info": {
+		"_postman_id": "df9bd024-a461-4909-b7e9-67266e6e930d",
+		"name": "grad",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30363088"
+	},
+	"item": [
+		{
+			"name": "project-create",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWZkYmEzOWI0ODczZWZhN2RmZDE3MGQiLCJpYXQiOjE3MTExOTcwNDMsImV4cCI6MTcxMTIwMDY0M30.meyrNiHh-jvLWbTn3gHn7PNbK83-d4Mktdg0m6IQUKc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"name\",\n    \"description\": \"description\",\n    \"abstract\" : \"abstract\",\n    \"isPublic\": false,\n    \"userEmails\": [\"yurekli20@itu.edu.tr\"],\n    \"tags\": [\"tag1\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/project/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"project",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWZkYmEzOWI0ODczZWZhN2RmZDE3MGQiLCJpYXQiOjE3MTEyMDAwMjAsImV4cCI6MTcxMTIwMzYyMH0.wp1ZmDt5QnlPOm_71rM4bPuJaFeNhuoEtZLKMFd2oCc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"yurekli20@itu.edu.tr\",\n    \"password\":\"123456\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/user/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add-dataset",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/yureklis/Desktop/bitirme/data.json"
+						},
+						{
+							"key": "name",
+							"value": "name",
+							"type": "text"
+						},
+						{
+							"key": "projectId",
+							"value": "65fda5f9c19f225b9f8bcb47",
+							"type": "text"
+						},
+						{
+							"key": "columnNames",
+							"value": "col1,col2,col3",
+							"type": "text"
+						},
+						{
+							"key": "columnActions",
+							"value": "mask,hash,none",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/project/add-dataset",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"project",
+						"add-dataset"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "proposal create",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWZkYmEzOWI0ODczZWZhN2RmZDE3MGQiLCJpYXQiOjE3MTEyMDAwMjAsImV4cCI6MTcxMTIwMzYyMH0.wp1ZmDt5QnlPOm_71rM4bPuJaFeNhuoEtZLKMFd2oCc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"proposalText\": \"Sample proposal text new23\",\n    \"potentialResearchBenefits\": \"Sample research benefits new\",\n    \"projectId\": \"65fed35f53eb1c47a2de5e5a\",\n    \"applicantUserIds\": []\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/proposal/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"proposal",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "proposal evaluate",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWZkYmEzOWI0ODczZWZhN2RmZDE3MGQiLCJpYXQiOjE3MTEyMDI4OTAsImV4cCI6MTcxMTIwNjQ5MH0.mnHzOvZrqa0ABp0NKwRDwhFKRMElsLMO_Ux8iyOxDE8",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"proposalId\":\"65feda8f66e05bfe22ec64d3\",\n    \"verified\":\"reject\",//or accept\n    \"proposalReviewText\":\"nice\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/proposal/evaluate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"proposal",
+						"evaluate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "proposal list",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWZkYmEzOWI0ODczZWZhN2RmZDE3MGQiLCJpYXQiOjE3MTEyMDI4OTAsImV4cCI6MTcxMTIwNjQ5MH0.mnHzOvZrqa0ABp0NKwRDwhFKRMElsLMO_Ux8iyOxDE8",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3838/api/proposal/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"proposal",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get institutions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3838/api/institution/get",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"institution",
+						"get"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add institution",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":\"itu\",\n    \"address\":\"maslak\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/institution/add",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"institution",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get tags",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3838/api/tag/get",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"tag",
+						"get"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add tag",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":\"Tag 1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/tag/add",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"tag",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"yurekli20@itu.edu.tr\",\n  \"password\": \"123456\",\n  \"phone\": \"1234567890\",\n  \"name\": \"Selim\",\n  \"surname\": \"Yürekli\",\n  \"address\": \"Kayseri\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/user/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"user",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "verify-user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"yurekli20@itu.edu.tr\",\n    \"verificationCode\":\"573384\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/user/verify-user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"user",
+						"verify-user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user detail",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWZkYmEzOWI0ODczZWZhN2RmZDE3MGQiLCJpYXQiOjE3MTEyMDAwMjAsImV4cCI6MTcxMTIwMzYyMH0.wp1ZmDt5QnlPOm_71rM4bPuJaFeNhuoEtZLKMFd2oCc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3838/api/user/detail",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"user",
+						"detail"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

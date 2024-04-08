@@ -3,7 +3,7 @@ const multer = require('multer');
 const path = require('path');
 
 const router = express.Router();
-const {createProject, createDatasetAndAdd2Project} = require("../controller/project")
+const { createProject, createDatasetAndAdd2Project, exploreProjects, detailProject, previewDataset } = require("../controller/project")
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -37,5 +37,7 @@ const upload = multer({
 
 router.post("/create", createProject);
 router.post("/add-dataset", createDatasetAndAdd2Project);
-
+router.get("/", exploreProjects);
+router.post("/detail", detailProject);
+router.post("/preview-dataset", previewDataset);
 module.exports = router;
