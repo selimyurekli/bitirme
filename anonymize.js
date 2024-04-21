@@ -5,10 +5,10 @@ function anonymize(jsonData, methodsToAnonymize, filePath) {
         columnsToAnonymized.forEach(column => {
             if (record.hasOwnProperty(column)) {
                 switch (methodsToAnonymize[column]) {
-                    case 'hash':
+                    case 'remove':
                         record[column] = hashString(record[column]);
                         break;
-                    case 'mask':
+                    case 'anonymize':
                         record[column] = maskString(record[column]);
                         break;
                     case 'none':
