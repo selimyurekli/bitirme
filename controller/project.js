@@ -172,8 +172,8 @@ const exploreProjects = async function (req, res, next) {
             
             queryCondition = {
                 $or: [
-                    { name: { $regex: regexSearch , options:i} },
-                    { description: { $regex: regexSearch, options: i } }
+                    { name: { $regex: regexSearch} },
+                    { description: { $regex: regexSearch } }
                 ],
                 tagIds: { $in: tagIdsList }
             };
