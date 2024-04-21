@@ -26,11 +26,11 @@ const login = async function(req,res,next){
 
         const token = tokenManager.generateToken(user._id);
         res.cookie('token', token, { httpOnly: true });
-        res.status(200).json({ message: 'Login successful', token });
+        return res.status(200).json({ message: 'Login successful', token });
         
       } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Server Error' });
+        return res.status(500).json({ message: 'Server Error' });
       }
     }
 
@@ -64,10 +64,10 @@ const signup = async function(req,res,next){
             throw new Error("Error when sending email.");
         };
         await user.save();
-        res.status(201).json({ message: 'User created successfully' });
+        return res.status(201).json({ message: 'User created successfully' });
       } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Server Error' });
+        return res.status(500).json({ message: 'Server Error' });
       }
 }
 
@@ -83,10 +83,10 @@ const verifyUser = async function(req, res, next) {
         user.verified = true;
         await user.save();
 
-        res.status(200).json({ message: 'User verified successfully' });
+        return res.status(200).json({ message: 'User verified successfully' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Server Error' });
+        return res.status(500).json({ message: 'Server Error' });
     }
 }
 
@@ -101,17 +101,82 @@ const userDetail = async function (req, res, next) {
       return res.status(400).json({ message: 'User not found.' });
     }
 
-    res.status(200).json({user : authUser });
+    return res.status(200).json({user : authUser });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server Error' });
+    return res.status(500).json({ message: 'Server Error' });
   }
 }
 
+const getUserOwnedProject = async function (req, res, next) {
+  try {
+
+    const id = req.authanticatedUserId;
+    var authUser = await User.findById(id).select('-password').populate("ownedProjectIds");;
+
+    if (!authUser) {
+      return res.status(400).json({ message: 'User not found.' });
+    }
+
+    var projects = authUser.ownedProjectIds;
+
+    var populatedProjects = await Promise.all(projects.map(async (project) => {
+      return await project.populate("tagIds");
+    }));
+
+
+    return res.status(200).json({ projects: populatedProjects });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Server Error' });
+  }
+}
+
+
+const getUserNameFromId = async function (req, res, next) {
+  try {
+
+    const userId = req.query.userId;
+    var userNameInfo = await User.findById(userId).select("name surname");
+
+    if (!userNameInfo) {
+      return res.status(400).json({ message: 'User not found.' });
+    }
+
+    return res.status(200).json({ userNameInfo });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Id is not in id format' });
+  }
+}
+
+
+const getUserSharedProjects = async function (req, res, next) {
+  try {
+
+    const id = req.authanticatedUserId;
+    var authUser = await User.findById(id).select('-password').populate("sharedProjectIds");;
+
+    if (!authUser) {
+      return res.status(400).json({ message: 'User not found.' });
+    }
+
+    var projects = authUser.sharedProjectIds;
+
+    var populatedProjects = await Promise.all(projects.map(async (project) => {
+      return await project.populate("tagIds");
+    }));
+
+    return res.status(200).json({ projects: populatedProjects });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Server Error' });
+  }
+}
 //forgot password
 
 //update fields
 
 
 
-module.exports = { login, signup, verifyUser, userDetail}
+module.exports = { login, signup, verifyUser, userDetail, getUserOwnedProject, getUserNameFromId, getUserSharedProjects }

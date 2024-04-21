@@ -138,7 +138,7 @@ const listProposals = async function(req, res, next) {
         
         response["sentProposals"] = proposalsSent;
         
-        const foundProjects = await Project.find({ _id: { $in: owner.projectIds } });
+        const foundProjects = await Project.find({ _id: { $in: owner.ownedProjectIds } });
 
         var receivedProposals = [];
         for (const project of foundProjects) {
