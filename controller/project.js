@@ -37,6 +37,10 @@ const createProject = async function (req, res, next) {
             if (collaborators.length != userEmails.length) {
                 return res.status(400).json({ error: 'Some or all users are not found in db.' });
             }
+            collaborators.forEach(async function (collaborator) {
+                collaborator.sharedProjectIds.push(savedProject._id)
+                await collaborator.save();
+            });
         }
 
         const newProject = new Project({
@@ -52,11 +56,7 @@ const createProject = async function (req, res, next) {
 
         const savedProject = await newProject.save();
         authUser.ownedProjectIds.push(savedProject._id);
-        collaborators.forEach(async function (collaborator) {
-            collaborator.sharedProjectIds.push(savedProject._id)
-            await collaborator.save();
-        });
-
+        
         foundTags.forEach(async function (foundTag) {
             foundTag.projectIds.push(savedProject._id)
             await foundTag.save();

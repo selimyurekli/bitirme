@@ -15,7 +15,6 @@ class TokenManager {
 
   verifyToken(token) {
     var token = token.split("Bearer ")[1];
-    
     try {
       if (typeof token !== 'undefined' && token !== null) {
         const decoded = jwt.verify(token, this.secretKey);

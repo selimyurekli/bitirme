@@ -15,10 +15,13 @@ const createProposal = async function(req, res, next) {
         
         const applicantUserIds = req.body.applicantUserIds;
 
-        const collaborators = await User.find({ email: { $in: applicantUserIds } }, '_id');
+        let collaborators = await User.find({ email: { $in: applicantUserIds } }, '_id');
         
         if (collaborators.length != applicantUserIds.length) {
             return res.status(400).json({ error: 'Some or all users are not found in db.' });
+        }
+        if(!collaborators){
+            collaborators = []
         }
 
         const newProposal = new Proposal({
@@ -92,7 +95,6 @@ const evaluateProposal = async function(req, res, next) {
             return res.status(400).json({ message: 'proposal not found or already responded.' });
         }
         const project = await Project.findById(proposal.projectId);
-        
     
         if(!project) {
             return res.status(400).json({ message: 'project not found.' });
@@ -108,9 +110,20 @@ const evaluateProposal = async function(req, res, next) {
         if(proposal.verified == 'accept'){
             if (proposal.applicantUserIds.length != 0){
                 project.userIds.push([proposal.applicantUserIds]);
+
+                const user1 = await User.updateMany(
+                    { _id: { $in: proposal.applicantUserIds } }, // Find users by their IDs
+                    { $addToSet: { sharedProjectIds: project._id } } // Add projectId to sharedProjectIds array
+                );
             }
-            if (!proposal.applicatorId in project.userIds){
+
+            if (!(proposal.applicatorId in project.userIds)){
                 project.userIds.push(proposal.applicatorId);
+                const user2 = await User.updateOne(
+                    { _id: proposal.applicatorId }, // Find the user by their ID
+                    { $addToSet: { sharedProjectIds: project._id } } // Add projectId to sharedProjectIds array
+                );
+                console.log(user2);
             }
         }
         
