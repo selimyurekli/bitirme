@@ -10,6 +10,7 @@ const fs = require('fs');
 const { default: mongoose } = require('mongoose');
 const path = require('path');
 const dfd = require("danfojs-node");
+const { json } = require('express');
 
 
 const tokenManager = new TokenManager();
@@ -30,17 +31,16 @@ const createProject = async function (req, res, next) {
             return res.status(400).json({ error: 'Tags are not found in db.' });
         }
 
-        let collaborators;
+        let collaborators = [];
         if (req.body.isPublic == false) {
             const userEmails = req.body.userEmails;
             collaborators = await User.find({ email: { $in: userEmails } });
+            if(!collaborators){
+                return res.status(400).json({ error: 'There are no users' });
+            }
             if (collaborators.length != userEmails.length) {
                 return res.status(400).json({ error: 'Some or all users are not found in db.' });
             }
-            collaborators.forEach(async function (collaborator) {
-                collaborator.sharedProjectIds.push(savedProject._id)
-                await collaborator.save();
-            });
         }
 
         const newProject = new Project({
@@ -56,6 +56,12 @@ const createProject = async function (req, res, next) {
 
         const savedProject = await newProject.save();
         authUser.ownedProjectIds.push(savedProject._id);
+        if (req.body.isPublic == false) {
+            collaborators.forEach(async function (collaborator) {
+                collaborator.sharedProjectIds.push(savedProject._id)
+                await collaborator.save();
+            });
+        }
         
         foundTags.forEach(async function (foundTag) {
             foundTag.projectIds.push(savedProject._id)
@@ -223,21 +229,28 @@ const previewDataset = async function (req, res, next) {
 
         const headValues = df.head().values;
         const columns = df.columns;
-        const dataIncolumnFormat = df.describe()["$dataIncolumnFormat"];
-        const index = df.describe()['$index'];
-        const describedColumns = df.describe()["columns"];
+        const ctypes = df.ctypes["$dataIncolumnFormat"];
+        let unique = [...new Set(ctypes)];
 
         let jsonSummary = [];
 
-        for (let ctr in dataIncolumnFormat) {
-            const dataInCtr = dataIncolumnFormat[ctr];
+        if(!(unique.length == 1 && unique[0] == 'string')){
             
-            const result = {};
-            dataInCtr.forEach((key, i) => {
-                result[index[i]] = dataInCtr[i];
-            });
-            result['column'] = describedColumns[ctr]
-            jsonSummary.push(result);
+            const dataIncolumnFormat = df.describe()["$dataIncolumnFormat"];
+            const index = df.describe()['$index'];
+            const describedColumns = df.describe()["columns"];
+
+
+            for (let ctr in dataIncolumnFormat) {
+                const dataInCtr = dataIncolumnFormat[ctr];
+
+                const result = {};
+                dataInCtr.forEach((key, i) => {
+                    result[index[i]] = dataInCtr[i];
+                });
+                result['column'] = describedColumns[ctr]
+                jsonSummary.push(result);
+            }
         }
         
         return res.status(200).json({ jsonSummary, headValues, columns, dataset});
