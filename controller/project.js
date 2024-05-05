@@ -147,6 +147,7 @@ const detailProject = async function (req, res, next) {
     try {
         var project = await Project.findById(req.body.projectId).populate("datasetIds");
         if (!project) {
+            console.log("hello");
             return res.status(400).json({ error: 'Project not found.' });
         }
 
@@ -221,11 +222,20 @@ const previewDataset = async function (req, res, next) {
         const projectId = dataset.projectId._id;
 
         let df; 
-        if(dataset.extension == "json"){
-            df = await dfd.readJSON(dataset.anonym_url);
-        } else {
-            df = await dfd.readCSV(dataset.anonym_url);
+
+        if (fs.existsSync(dataset.anonym_url)) {
+            if (dataset.extension == "json") {
+
+                df = await dfd.readJSON(dataset.anonym_url);
+            } else {
+                df = await dfd.readCSV(dataset.anonym_url);
+            }
         }
+        else {
+            console.log("not found dataset file.")
+            return res.status(500).json({ error: 'Dataset not found.' });
+        }
+        
 
         const headValues = df.head().values;
         const columns = df.columns;
@@ -260,4 +270,35 @@ const previewDataset = async function (req, res, next) {
     }
 }
 
-module.exports = { createProject, createDatasetAndAdd2Project, detailProject, exploreProjects, previewDataset }
+const removeDataset = async function (req, res, next) {
+
+    try {
+        const dataset = await Dataset.findByIdAndDelete(req.body.datasetId);
+        if (!dataset) {
+            return res.status(400).json({ error: 'Dataset not found.' });
+        }
+        
+        const savedProject = await Project.findOneAndUpdate(
+            { '_id': dataset.projectId },
+            { $pull: { datasetIds: req.body.datasetId }},
+            {new: true}
+        );
+
+        if (fs.existsSync(dataset.url) && fs.existsSync(dataset.anonym_url) ) {
+
+            fs.unlinkSync(dataset.url);
+            fs.unlinkSync(dataset.anonym_url);
+            return res.status(200).json({ message: 'File deleted successfully' });
+        } else {
+            
+            return res.status(404).json({ message: 'File not found' });
+        }
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+
+module.exports = { createProject, createDatasetAndAdd2Project, detailProject, exploreProjects, previewDataset, removeDataset}

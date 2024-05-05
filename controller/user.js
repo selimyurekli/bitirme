@@ -173,10 +173,17 @@ const getUserSharedProjects = async function (req, res, next) {
     return res.status(500).json({ message: 'Server Error' });
   }
 }
-//forgot password
 
-//update fields
+const forgotPassword = async function (req, res, next) {
+  try {
+    return null;
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Server Error' });
+  }
+}
 
 
 
-module.exports = { login, signup, verifyUser, userDetail, getUserOwnedProject, getUserNameFromId, getUserSharedProjects }
+
+module.exports = { login, signup, verifyUser, userDetail, getUserOwnedProject, getUserNameFromId, getUserSharedProjects, forgotPassword }

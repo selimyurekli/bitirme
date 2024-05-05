@@ -1,3 +1,5 @@
+const crypto = require('crypto');
+
 
 function anonymize(jsonData, methodsToAnonymize, filePath) {
     const columnsToAnonymized = Object.keys(methodsToAnonymize);
@@ -6,11 +8,14 @@ function anonymize(jsonData, methodsToAnonymize, filePath) {
             if (record.hasOwnProperty(column)) {
                 switch (methodsToAnonymize[column]) {
                     case 'remove':
-                        record[column] = hashString(record[column]);
+                        record[column] = removeString(record[column]);
                         break;
                     case 'anonymize':
-                        record[column] = maskString(record[column]);
+                        record[column] = anonymizeString(record[column]);
                         break;
+                    case 'hash':
+                        record[column] = hashString(record[column]);
+                        break;    
                     case 'none':
                         break;    
                     default:
@@ -26,12 +31,28 @@ function anonymize(jsonData, methodsToAnonymize, filePath) {
     return jsonData;
 }
 
-function hashString(str) {
-    return 'hashed_' + str;
+function removeString(str) {
+    if (str == null) {
+        return "null";
+    }
+    return "";
 }
 
-function maskString(str) {
-    return 'masked_' + str;
+function anonymizeString(str) {
+    if (str == null) {
+        return "null";
+    }
+    const regex = /./g;
+    return str.replace(regex, "*");
+}
+
+function hashString(str){
+    if (str == null){
+        return "null";
+    }
+    const hash = crypto.createHash('sha256');
+    hash.update(str);
+    return hash.digest('hex');
 }
 
 const fs = require('fs');

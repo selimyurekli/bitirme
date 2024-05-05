@@ -1,0 +1,26 @@
+[
+  {
+    "col1": "hashed_col1_data1",
+    "col2": "masked_col2_data1",
+    "col3": 2.5,
+    "col4": 2
+  },
+  {
+    "col1": "hashed_col1_data2",
+    "col2": "masked_col2_data2",
+    "col3": 3.5,
+    "col4": 3
+  },
+  {
+    "col1": "hashed_col1_data3",
+    "col2": "masked_col2_data3",
+    "col3": 4.5,
+    "col4": 4
+  },
+  {
+    "col1": "hashed_col1_data4",
+    "col2": "masked_col2_data4",
+    "col3": 8.5,
+    "col4": 5
+  }
+]

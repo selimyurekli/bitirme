@@ -2,6 +2,7 @@ const TokenManager = require('../utils/TokenManager');
 const Project = require("../models/project");
 const tokenManager = new TokenManager();
 const mongoose = require('mongoose');
+const path = require('path');
 
 const isAuth = function(req, res, next) {
     const token = (req.headers.authorization);
@@ -19,7 +20,11 @@ const isAuth = function(req, res, next) {
 }
 
 const datasetFolderAccessController = async function (req, res, next) {
+        
     try {
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+        
         const token = (req.headers.authorization);
         if (!token) {
             return res.status(401).json({ message: "Not authorized. " })
@@ -38,7 +43,7 @@ const datasetFolderAccessController = async function (req, res, next) {
             const isUserInProject = project.userIds.some(userId => userId._id.equals(id));
 
             if (id == project.ownerId._id || isUserInProject) {
-                next();
+                return res.sendFile(path.join(__dirname, '../', 'anonymdatasets', req.url));
             }
             else {
                 return res.status(401).json({ message: "Not authorized. " })
