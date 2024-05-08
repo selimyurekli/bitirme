@@ -158,6 +158,7 @@ const detailProject = async function (req, res, next) {
     }
 }
 
+//public olmayan projeleri exploreda gönderme
 const exploreProjects = async function (req, res, next) {
     try {
         let { page, limit, sortBy, sortOrder, search, tags } = req.query;
@@ -300,5 +301,85 @@ const removeDataset = async function (req, res, next) {
     }
 }
 
+const editProject = async function(req, res, next) {
+    try {
+        const id = req.authanticatedUserId;
+        var authUser = await User.findById(id).select('-password');        
 
-module.exports = { createProject, createDatasetAndAdd2Project, detailProject, exploreProjects, previewDataset, removeDataset}
+        const { name, description, abstract, projectId, tagIds } = req.body;
+        const project = await Project.findById(projectId);
+
+        if(id != project.ownerId.toString()){
+            return res.status(404).json({ message: 'Only project owner can edit.' });
+        }
+
+        const updatedProject = await Project.findByIdAndUpdate(projectId, {
+            name: name,
+            description: description,
+            abstract: abstract,
+            tagIds: tagIds
+        }, { new: true });
+
+        if (!updatedProject) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+
+        return res.status(200).json({ message: 'Project updated successfully', user: updatedProject });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Server Error' });
+    }
+
+}
+
+const deleteProject = async function (req, res, next) {
+    try {
+        const id = req.authanticatedUserId;
+        var authUser = await User.findById(id).select('-password');
+        var projectId = req.body.projectId;
+        const project = await Project.findById(projectId);
+        if(!project){
+            return res.status(400).json({ message: 'Project not found' });
+
+        }
+        if (id != project.ownerId.toString()) {
+            return res.status(400).json({ message: 'Only project owner can delete.' });
+        }
+
+        if (project.datasetIds.length != 0) {
+            return res.status(400).json({ message: 'Please remove dataset first.' });
+        }
+
+        const userIds = await User.find({ sharedProjectIds: projectId }, '_id');
+        await User.updateMany(
+            { _id: { $in: userIds } },
+            { $pull: { sharedProjectIds: projectId } }
+        );
+
+        await User.updateMany(
+            { _id: id  },
+            { $pull: { ownedProjectIds: projectId } }
+        );
+
+        const tagIds = await Tag.find({ projectIds: projectId }, '_id');
+        await Tag.updateMany(
+            { _id: { $in: userIds } },
+            { $pull: { projectIds: projectId } }
+        );
+        const projects = await Project.findByIdAndDelete(projectId);
+        return res.status(200).json("Project successfully deleted. ");
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Server Error' });
+    }
+
+
+}
+
+
+
+
+
+module.exports = { createProject, createDatasetAndAdd2Project, detailProject, exploreProjects, previewDataset, removeDataset, editProject, deleteProject}

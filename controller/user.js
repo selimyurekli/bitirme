@@ -137,7 +137,7 @@ const getUserNameFromId = async function (req, res, next) {
   try {
 
     const userId = req.query.userId;
-    var userNameInfo = await User.findById(userId).select("name surname");
+    var userNameInfo = await User.findById(userId).select("name surname email");
 
     if (!userNameInfo) {
       return res.status(400).json({ message: 'User not found.' });
@@ -183,7 +183,32 @@ const forgotPassword = async function (req, res, next) {
   }
 }
 
+const editUserProfile = async function (req, res, next) {
+  try {
+    const id = req.authanticatedUserId;
+    var authUser = await User.findById(id).select('-password');
+    const { name, surname, role, institutionId, address } = req.body;
+
+    const updatedUserProfile = await User.findByIdAndUpdate(id, {
+      name: name,
+      surname: surname,
+      role: role,
+      institutionId: institutionId,
+      address: address
+    }, { new: true });
+
+    if (!updatedUserProfile) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json({ message: 'User profile updated successfully', user: updatedUserProfile });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Server Error' });
+  }
+}
 
 
 
-module.exports = { login, signup, verifyUser, userDetail, getUserOwnedProject, getUserNameFromId, getUserSharedProjects, forgotPassword }
+module.exports = { login, signup, verifyUser, userDetail, getUserOwnedProject, getUserNameFromId, getUserSharedProjects, forgotPassword, editUserProfile}

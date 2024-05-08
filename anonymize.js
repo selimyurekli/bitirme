@@ -32,9 +32,10 @@ function anonymize(jsonData, methodsToAnonymize, filePath) {
 }
 
 function removeString(str) {
-    if (str == null) {
+    if (str == null && typeof(str) == 'String') {
         return "null";
     }
+    //remove all column
     return "";
 }
 
