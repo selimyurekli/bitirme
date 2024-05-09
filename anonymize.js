@@ -43,8 +43,7 @@ function anonymizeString(str) {
     if (str == null) {
         return "null";
     }
-    const regex = /./g;
-    return str.replace(regex, "*");
+    return '*'.repeat(10);
 }
 
 function hashString(str){

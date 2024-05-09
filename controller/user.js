@@ -176,7 +176,48 @@ const getUserSharedProjects = async function (req, res, next) {
 
 const forgotPassword = async function (req, res, next) {
   try {
-    return null;
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const resetCode = Math.floor(100000 + Math.random() * 900000); // Generate verification code
+
+    user.verificationCode = resetCode;
+
+    const isSuccess = emailSender.sendEmail(email, "Password Reset", "Your reset code is " + resetCode + ".");
+    if (!isSuccess) {
+      throw new Error("Error when sending email.");
+    };
+    await user.save();
+    return res.status(200).json({ message: 'Sent code to your email address.' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Server Error' });
+  }
+}
+
+const resetPassword = async function (req, res, next) {
+  try {
+    const { email, newPassword, resetCode} = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (resetCode == null || user.verificationCode != resetCode){
+      user.verificationCode = null;
+      await user.save();
+      return res.status(400).json({ message: 'Wrong code. Please try with new one.' });
+    }
+    user.password = newPassword;
+    await user.save();
+    return res.status(200).json({ message: 'Password successfully changed.'});
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Server Error' });
@@ -211,4 +252,4 @@ const editUserProfile = async function (req, res, next) {
 
 
 
-module.exports = { login, signup, verifyUser, userDetail, getUserOwnedProject, getUserNameFromId, getUserSharedProjects, forgotPassword, editUserProfile}
+module.exports = { login, signup, verifyUser, userDetail, getUserOwnedProject, getUserNameFromId, getUserSharedProjects, forgotPassword, editUserProfile, resetPassword}
