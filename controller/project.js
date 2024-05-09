@@ -147,7 +147,6 @@ const detailProject = async function (req, res, next) {
     try {
         var project = await Project.findById(req.body.projectId).populate("datasetIds");
         if (!project) {
-            console.log("hello");
             return res.status(400).json({ error: 'Project not found.' });
         }
 
@@ -351,7 +350,7 @@ const deleteProject = async function (req, res, next) {
             return res.status(400).json({ message: 'Please remove dataset first.' });
         }
 
-        const userIds = await User.find({ sharedProjectIds: projectId }, '_id');
+        var userIds = await User.find({ sharedProjectIds: projectId }, '_id');
         await User.updateMany(
             { _id: { $in: userIds } },
             { $pull: { sharedProjectIds: projectId } }
@@ -364,11 +363,22 @@ const deleteProject = async function (req, res, next) {
 
         const tagIds = await Tag.find({ projectIds: projectId }, '_id');
         await Tag.updateMany(
-            { _id: { $in: userIds } },
+            { _id: { $in: tagIds } },
             { $pull: { projectIds: projectId } }
         );
+
+        var proposals = await Proposal.find({ projectId: projectId }, 'applicatorId');
+        for (proposal of proposals){
+            await User.updateOne(
+                { _id: proposal.applicatorId },
+                { $pull: { proposalIds: proposal._id } }
+            );
+        }
+
+        await Proposal.deleteMany({projectId: projectId});
+
         const projects = await Project.findByIdAndDelete(projectId);
-        return res.status(200).json("Project successfully deleted. ");
+        return res.status(200).json({ message: "Project successfully deleted." });
 
     } catch (error) {
         console.error(error);
@@ -377,9 +387,6 @@ const deleteProject = async function (req, res, next) {
 
 
 }
-
-
-
 
 
 module.exports = { createProject, createDatasetAndAdd2Project, detailProject, exploreProjects, previewDataset, removeDataset, editProject, deleteProject}
