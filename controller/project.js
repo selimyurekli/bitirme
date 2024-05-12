@@ -157,7 +157,6 @@ const detailProject = async function (req, res, next) {
     }
 }
 
-//public olmayan projeleri exploreda gönderme
 const exploreProjects = async function (req, res, next) {
     try {
         let { page, limit, sortBy, sortOrder, search, tags } = req.query;
@@ -178,18 +177,28 @@ const exploreProjects = async function (req, res, next) {
             const tagIdsList = tagIds.map(tag => tag._id.toString());
             
             queryCondition = {
-                $or: [
-                    { name: { $regex: regexSearch} },
-                    { description: { $regex: regexSearch } }
-                ],
-                tagIds: { $in: tagIdsList }
+                $and: [
+                    {
+                        $or: [
+                            { name: { $regex: regexSearch } },
+                            { description: { $regex: regexSearch } }
+                        ]
+                    },
+                    { tagIds: { $in: tagIdsList } },
+                    { isPublic: true }
+                ]
             };
         }
         else{
             queryCondition = {
-                $or: [
-                    { name: { $regex: regexSearch } },
-                    { description: { $regex: regexSearch } }
+                $and: [
+                    {
+                        $or: [
+                            { name: { $regex: regexSearch } },
+                            { description: { $regex: regexSearch } }
+                        ]
+                    },
+                    { isPublic: true }
                 ]
             };
         }
