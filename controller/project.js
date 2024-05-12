@@ -93,6 +93,7 @@ const createDatasetAndAdd2Project = async function (req, res, next) {
         }
 
         const file = req.files[0];
+        console.log(file);
         const extension = getFileExtension(file.originalname);
 
         const dataset = new Dataset({
@@ -202,7 +203,7 @@ const exploreProjects = async function (req, res, next) {
                 ]
             };
         }
-        
+        console.log(queryCondition);
         const projects = await Project.find(queryCondition)
             .populate("datasetIds tagIds")
             .sort({ [sortBy]: sortOrder})
@@ -300,7 +301,7 @@ const removeDataset = async function (req, res, next) {
             return res.status(200).json({ message: 'File deleted successfully' });
         } else {
             
-            return res.status(404).json({ message: 'File not found' });
+            return res.status(200).json({ message: 'File not found but dataset deleted' });
         }
 
     } catch (error) {

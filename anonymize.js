@@ -8,7 +8,7 @@ function anonymize(jsonData, methodsToAnonymize, filePath) {
             if (record.hasOwnProperty(column)) {
                 switch (methodsToAnonymize[column]) {
                     case 'remove':
-                        record[column] = removeString(record[column]);
+                        delete record[column];
                         break;
                     case 'anonymize':
                         record[column] = anonymizeString(record[column]);
@@ -16,8 +16,11 @@ function anonymize(jsonData, methodsToAnonymize, filePath) {
                     case 'hash':
                         record[column] = hashString(record[column]);
                         break;    
+                    case 'empty':
+                        record[column] = emptyString(record[column]);
+                        break;  
                     case 'none':
-                        break;    
+                        break;
                     default:
                         console.error('Invalid anonymization method:', methodsToAnonymize[column]);
                         break;
@@ -31,7 +34,7 @@ function anonymize(jsonData, methodsToAnonymize, filePath) {
     return jsonData;
 }
 
-function removeString(str) {
+function emptyString(str) {
     if (str == null && typeof(str) == 'String') {
         return "null";
     }
@@ -49,6 +52,10 @@ function anonymizeString(str) {
 function hashString(str){
     if (str == null){
         return "null";
+    }
+    // Convert integer to string
+    if (typeof str === 'number') {
+        str = str.toString();
     }
     const hash = crypto.createHash('sha256');
     hash.update(str);
