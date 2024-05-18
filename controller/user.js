@@ -95,7 +95,7 @@ const userDetail = async function (req, res, next) {
   try {
     
     const id = req.authanticatedUserId;
-    var authUser = await User.findById(id).select('-password');;
+    var authUser = await User.findById(id, '-password');
     
     if (!authUser) {
       return res.status(400).json({ message: 'User not found.' });
@@ -104,7 +104,7 @@ const userDetail = async function (req, res, next) {
     return res.status(200).json({user : authUser });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Server Error' });
+    return res.status(500).json({ message: error });
   }
 }
 
@@ -112,7 +112,7 @@ const getUserOwnedProject = async function (req, res, next) {
   try {
 
     const id = req.authanticatedUserId;
-    var authUser = await User.findById(id).select('-password').populate("ownedProjectIds");;
+    var authUser = await User.findById(id, '-password').populate("ownedProjectIds");;
 
     if (!authUser) {
       return res.status(400).json({ message: 'User not found.' });
@@ -137,7 +137,7 @@ const getUserNameFromId = async function (req, res, next) {
   try {
 
     const userId = req.query.userId;
-    var userNameInfo = await User.findById(userId).select("name surname email");
+    var userNameInfo = await User.findById(userId, "name surname email");
 
     if (!userNameInfo) {
       return res.status(400).json({ message: 'User not found.' });
@@ -227,7 +227,7 @@ const resetPassword = async function (req, res, next) {
 const editUserProfile = async function (req, res, next) {
   try {
     const id = req.authanticatedUserId;
-    var authUser = await User.findById(id).select('-password');
+    var authUser = await User.findById(id, '-password');
     const { name, surname, role, institutionId, address } = req.body;
 
     const updatedUserProfile = await User.findByIdAndUpdate(id, {

@@ -23,7 +23,7 @@ const createProject = async function (req, res, next) {
     try {
 
         const id = req.authanticatedUserId;
-        const authUser = await User.findById(id).select("-password");
+        const authUser = await User.findById(id, '-password')
 
         const tags = req.body.tags;
         const foundTags = await Tag.find({ name: { $in: tags } });
@@ -399,4 +399,4 @@ const deleteProject = async function (req, res, next) {
 }
 
 
-module.exports = { createProject, createDatasetAndAdd2Project, detailProject, exploreProjects, previewDataset, removeDataset, editProject, deleteProject}
+module.exports = { createProject, createDatasetAndAdd2Project, detailProject, exploreProjects, previewDataset, removeDataset, editProject, deleteProject, getFileExtension }

@@ -28,3 +28,5 @@ app.use("/api", index);
 app.listen(3838,()=>{
   console.log("The application is started on port: ",3838);
 });
+
+module.exports = { express, app };
