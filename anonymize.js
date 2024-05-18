@@ -10,8 +10,8 @@ function anonymize(jsonData, methodsToAnonymize, filePath) {
                     case 'remove':
                         delete record[column];
                         break;
-                    case 'anonymize':
-                        record[column] = anonymizeString(record[column]);
+                    case 'mask':
+                        record[column] = maskString(record[column]);
                         break;
                     case 'hash':
                         record[column] = hashString(record[column]);
@@ -19,6 +19,9 @@ function anonymize(jsonData, methodsToAnonymize, filePath) {
                     case 'empty':
                         record[column] = emptyString(record[column]);
                         break;  
+                    case 'randomize':
+                        record[column] = randomizeString(record[column]);
+                        break;      
                     case 'none':
                         break;
                     default:
@@ -42,7 +45,7 @@ function emptyString(str) {
     return "";
 }
 
-function anonymizeString(str) {
+function maskString(str) {
     if (str == null) {
         return "null";
     }
@@ -62,6 +65,23 @@ function hashString(str){
     return hash.digest('hex');
 }
 
+function randomizeString(str) {
+    if (str == null) {
+        return "null";
+    }
+    
+    if (typeof str !== 'string') {
+        return str; // Return input unchanged if it's not a string
+    }
+
+    let randomizedStr = '';
+    for (let i = 0; i < str.length; i++) {
+        const randomChar = String.fromCharCode(Math.floor(Math.random() * 26) + 97); // Random lowercase ASCII character
+        randomizedStr += randomChar;
+    }
+
+    return randomizedStr;
+}
 const fs = require('fs');
 const path = require('path');
 const csv = require('csv-parser');
