@@ -14,6 +14,8 @@ const projectSchema = new mongoose.Schema({
   proposalIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Proposal' }]
 });
 
+projectSchema.index({ name: 'text', description: 'text' });
+
 const Project = mongoose.model('Project', projectSchema);
 
 module.exports = Project;

@@ -171,38 +171,19 @@ const exploreProjects = async function (req, res, next) {
 
         const regexSearch = new RegExp(search, 'i');
 
-        let queryCondition;
-        if(tags != ''){
+        let queryCondition = { isPublic: true };
+
+        if (search) {
+            queryCondition.$text = { $search: search };
+        }
+
+        if (tags) {
             const tagNames = tags.split(',');
             const tagIds = await Tag.find({ name: { $in: tagNames } }, '_id');
             const tagIdsList = tagIds.map(tag => tag._id.toString());
-            
-            queryCondition = {
-                $and: [
-                    {
-                        $or: [
-                            { name: { $regex: regexSearch } },
-                            { description: { $regex: regexSearch } }
-                        ]
-                    },
-                    { tagIds: { $in: tagIdsList } },
-                    { isPublic: true }
-                ]
-            };
+            queryCondition.tagIds = { $in: tagIdsList };
         }
-        else{
-            queryCondition = {
-                $and: [
-                    {
-                        $or: [
-                            { name: { $regex: regexSearch } },
-                            { description: { $regex: regexSearch } }
-                        ]
-                    },
-                    { isPublic: true }
-                ]
-            };
-        }
+        
         console.log(queryCondition);
         const projects = await Project.find(queryCondition)
             .populate("datasetIds tagIds")

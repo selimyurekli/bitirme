@@ -1,35 +1,35 @@
 const supertest = require('supertest');
-const { app } = require('./app'); // Ensure app is correctly exported from your app file
+const { app } = require('./app');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 
-const User = require('./models/user'); // Adjust path accordingly
-const Institution = require('./models/institution'); // Adjust path accordingly
-const Proposal = require('./models/proposal'); // Adjust path accordingly
-const Project = require('./models/project'); // Adjust path accordingly
-const Tag = require('./models/tag'); // Adjust path accordingly
-const Dataset = require('./models/dataset'); // Adjust path accordingly
+const User = require('./models/user');
+const Institution = require('./models/institution');
+const Proposal = require('./models/proposal');
+const Project = require('./models/project'); 
+const Tag = require('./models/tag'); 
+const Dataset = require('./models/dataset');
 const dfd = require("danfojs-node");
 
-const tokenManager = require('./utils/TokenManager'); // Adjust path accordingly
-const emailSender = require('./utils/EmailSender'); // Adjust path accordingly
-jest.mock('./models/user'); // Mock User model
-jest.mock('./models/institution'); // Mock institution model
-jest.mock('./models/tag'); // Mock tag model
-jest.mock('./models/project'); // Mock project model
-jest.mock('./models/proposal'); // Mock proposal model
-jest.mock('./models/dataset'); // Mock dataset model
-jest.mock('./anonymize'); // Mock anonymize
+const tokenManager = require('./utils/TokenManager');
+const emailSender = require('./utils/EmailSender');
+jest.mock('./models/user');
+jest.mock('./models/institution');
+jest.mock('./models/tag'); 
+jest.mock('./models/project');
+jest.mock('./models/proposal');
+jest.mock('./models/dataset');
+jest.mock('./anonymize'); 
 
 
-jest.mock('bcrypt'); // Mock bcrypt
+jest.mock('bcrypt'); 
 
-const { login, signup, verifyUser, userDetail, getUserNameFromId, editUserProfile, forgotPassword, resetPassword} = require('./controller/user'); // Adjust path accordingly
-const { addInstitution, getInstutitions} = require('./controller/institution'); // Adjust path accordingly
-const { addTag, getTags } = require('./controller/tag'); // Adjust path accordingly
-const { createProposal, updateProposal, evaluateProposal, listProposals } = require('./controller/proposal'); // Adjust path accordingly
-const { createProject, createDatasetAndAdd2Project, previewDataset} = require('./controller/project'); // Adjust path accordingly
+const { login, signup, verifyUser, userDetail, getUserNameFromId, editUserProfile, forgotPassword, resetPassword} = require('./controller/user'); 
+const { addInstitution, getInstutitions} = require('./controller/institution'); 
+const { addTag, getTags } = require('./controller/tag'); 
+const { createProposal, updateProposal, evaluateProposal, listProposals } = require('./controller/proposal'); 
+const { createProject, createDatasetAndAdd2Project, previewDataset} = require('./controller/project'); 
 const {anonymizeFile} = require('./anonymize')
 const EmailSender = require('./utils/EmailSender');
 const TokenManager = require('./utils/TokenManager');
@@ -91,9 +91,9 @@ describe('API user', () => {
 
     describe('POST /api/user/signup', () => {
         beforeEach(() => {
-            Institution.findById = jest.fn(); // Mock the findById method
+            Institution.findById = jest.fn(); 
             User.findOne = jest.fn();
-            EmailSender.prototype.sendEmail = jest.fn().mockResolvedValue(true); // Mock sendEmail to always return true
+            EmailSender.prototype.sendEmail = jest.fn().mockResolvedValue(true);
 
         });
 
@@ -179,7 +179,7 @@ describe('API user', () => {
 
         beforeEach(() => {
             User.findOne = jest.fn();
-            EmailSender.prototype.sendEmail = jest.fn().mockResolvedValue(true); // Mock sendEmail to always return true
+            EmailSender.prototype.sendEmail = jest.fn().mockResolvedValue(true); 
         });
 
         it('should send reset code to user email', async () => {
@@ -239,7 +239,7 @@ describe('API user', () => {
             });
             const res = mockResponse();
 
-            // Mock User.findById to resolve with the mock user
+            
             const mockUser = {
                 _id: req.authenticatedUserId,
                 name: 'Original Name',
@@ -247,7 +247,7 @@ describe('API user', () => {
                 role: 'Original Role',
                 institutionId: 'Original Institution ID',
                 address: 'Original Address',
-                save: jest.fn() // Mock save method
+                save: jest.fn()
             };
             User.findById = jest.fn().mockResolvedValue(mockUser);
 
@@ -438,7 +438,7 @@ describe('API proposal', () => {
             User.findOne = jest.fn();
             User.find = jest.fn();
             Proposal.findByIdAndUpdate = jest.fn();
-            TokenManager.prototype.verifyToken = jest.fn().mockResolvedValue(proposalCreator); // Mock sendEmail to always return true
+            TokenManager.prototype.verifyToken = jest.fn().mockResolvedValue(proposalCreator); 
         });
 
         it('should update a proposal successfully', async () => {
@@ -526,62 +526,6 @@ describe('API proposal', () => {
             expect(res.status).toHaveBeenCalledWith(200);
         });
     });
-    // describe('listProposals', () => {
-    //     beforeEach(() => {
-    //         User.findOne = jest.fn();
-    //         User.find = jest.fn();
-    //         Proposal.findByIdAndUpdate = jest.fn();
-    //         Proposal.find = jest.fn(); // Mock sendEmail to always return true
-    //     });
-    //     it('should list sent and received proposals successfully', async () => {
-    //         const userId = 'userId123';
-    //         const proposalIds = ['proposal1', 'proposal2'];
-    //         const ownedProjectIds = ['project1', 'project2'];
-
-    //         const mockUser = {
-    //             _id: userId,
-    //             proposalIds: proposalIds,
-    //             ownedProjectIds: ownedProjectIds
-    //         };
-
-    //         const mockProposals = proposalIds.map(id => ({
-    //             _id: id,
-    //             proposalText: `Proposal Text ${id}`,
-    //             updated_at: new Date(),
-    //             sort: jest.fn(() => mockProposals)
-
-    //         }));
-
-    //         const mockProjects = ownedProjectIds.map(id => ({
-    //             _id: id,
-    //             name: `Project Name ${id}`,
-    //             description: `Project Description ${id}`,
-    //             proposalIds: proposalIds,
-    //             sort: jest.fn(() => mockProjects)
-    //         }));
-
-    //         const mockReceivedProposals = proposalIds.map(id => ({
-    //             _id: id,
-    //             proposalText: `Proposal Text ${id}`,
-    //             verified: 'none',
-    //             sort: jest.fn(() => mockReceivedProposals)
-
-    //         }));
-
-    //         User.findById.mockResolvedValue(mockUser);
-    //         Proposal.find.mockResolvedValue(mockProposals);
-    //         Project.find.mockResolvedValue(mockProjects);
-
-    //         const req = mockRequest();
-    //         req.authanticatedUserId = userId;
-    //         const res = mockResponse();
-
-    //         await listProposals(req, res, mockNext);
-
-
-    //         expect(res.status).toHaveBeenCalledWith(200);
-    //     });
-    // });
 });
 
 describe('API project', () => {
