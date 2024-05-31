@@ -1,6 +1,7 @@
 const express = require("express");
 const multer = require('multer');
 const path = require('path');
+const { isAuth } = require('../middlewares/user');
 
 const router = express.Router();
 const { createProject, createDatasetAndAdd2Project, exploreProjects, detailProject, previewDataset, removeDataset, editProject, deleteProject, livePreview } = require("../controller/project")
@@ -35,14 +36,14 @@ const upload = multer({
 });
 
 
-router.post("/create", createProject);
-router.post("/add-dataset", createDatasetAndAdd2Project);
+router.post("/create", isAuth, createProject);
+router.post("/add-dataset", isAuth, createDatasetAndAdd2Project);
 router.get("/", exploreProjects);
 router.post("/detail", detailProject);
 router.post("/preview-dataset", previewDataset);
-router.post("/remove-dataset", removeDataset);
-router.post("/edit", editProject);
-router.post("/delete", deleteProject);
-router.post("/live-preview", livePreview);
+router.post("/remove-dataset", isAuth, removeDataset);
+router.post("/edit", isAuth, editProject);
+router.post("/delete", isAuth, deleteProject);
+router.post("/live-preview", isAuth, livePreview);
 
 module.exports = router;

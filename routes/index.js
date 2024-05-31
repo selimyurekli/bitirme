@@ -8,7 +8,7 @@ const tag = require("./tag");
 const {isAuth} = require('../middlewares/user');
 
 router.use("/user", user);
-router.use("/project",isAuth ,project); //projeye kullanıcı pdf ekleyebilir. proje detayı için. SHA 256 kullan tcler için anonimleştirirken. aynı kullanıcılar için aynı hash çıktısı almalı.
+router.use("/project", project); //projeye kullanıcı pdf ekleyebilir. proje detayı için. SHA 256 kullan tcler için anonimleştirirken. aynı kullanıcılar için aynı hash çıktısı almalı.
 router.use("/proposal",isAuth ,proposal);//proposal için dosya yükleme
 router.use("/institution", institution); //tests done.
 router.use("/tag", tag); //tests done.
