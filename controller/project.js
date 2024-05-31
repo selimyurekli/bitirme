@@ -4,7 +4,7 @@ const Dataset = require('../models/dataset');
 const Proposal = require('../models/proposal');
 const User = require('../models/user');
 const Tag = require('../models/tag');
-const { anonymizeFile } = require('../anonymize')
+const { anonymizeFile, anonymize } = require('../anonymize')
 const TokenManager = require('../utils/TokenManager');
 const fs = require('fs');
 const { default: mongoose } = require('mongoose');
@@ -23,7 +23,7 @@ const createProject = async function (req, res, next) {
     try {
 
         const id = req.authanticatedUserId;
-        const authUser = await User.findById(id, '-password')
+        const authUser = await User.findById(id, '-password');
 
         const tags = req.body.tags;
         const foundTags = await Tag.find({ name: { $in: tags } });
@@ -31,16 +31,19 @@ const createProject = async function (req, res, next) {
             return res.status(400).json({ error: 'Tags are not found in db.' });
         }
 
-        let collaborators = [];
-        if (req.body.isPublic == false) {
-            const userEmails = req.body.userEmails;
-            collaborators = await User.find({ email: { $in: userEmails } });
-            if(!collaborators){
-                return res.status(400).json({ error: 'There are no users' });
-            }
-            if (collaborators.length != userEmails.length) {
-                return res.status(400).json({ error: 'Some or all users are not found in db.' });
-            }
+        
+        const userEmails = req.body.userEmails;
+        const userList = await User.find({ email: { $in: userEmails } });
+
+        if (userList.length != userEmails.length) {
+            return res.status(400).json({ error: 'Some or all users are not found in db.' });
+        }
+
+        const collaboratorEmails = req.body.collaboratorEmails;
+        
+        const collaboratorList = await User.find({ email: { $in: collaboratorEmails } });
+        if (collaboratorList.length != collaboratorEmails.length) {
+            return res.status(400).json({ error: 'Some or all collaborators are not found in db.' });
         }
 
         const newProject = new Project({
@@ -49,25 +52,30 @@ const createProject = async function (req, res, next) {
             abstract: req.body.abstract,
             isPublic: req.body.isPublic,
             ownerId: authUser._id,
-            userIds: !req.body.isPublic ? collaborators : [],
+            userIds: userList,
+            collaboratorIds: collaboratorList,
             tagIds: foundTags
         });
 
 
         const savedProject = await newProject.save();
+        
         authUser.ownedProjectIds.push(savedProject._id);
-        if (req.body.isPublic == false) {
-            collaborators.forEach(async function (collaborator) {
-                collaborator.sharedProjectIds.push(savedProject._id)
-                await collaborator.save();
-            });
-        }
+        
+        userList.forEach(async function (user) {
+            user.sharedProjectIds.push(savedProject._id)
+            await user.save();
+        });
+
+        collaboratorList.forEach(async function (collaborator) {
+            collaborator.collaboratedProjectIds.push(savedProject._id);
+            await collaborator.save();
+        });
         
         foundTags.forEach(async function (foundTag) {
             foundTag.projectIds.push(savedProject._id)
             await foundTag.save();
         });
-
 
         await authUser.save();
 
@@ -80,6 +88,8 @@ const createProject = async function (req, res, next) {
 
 const createDatasetAndAdd2Project = async function (req, res, next) {
     try {
+        const id = req.authanticatedUserId;
+        const authUser = await User.findById(id, '-password');
 
         const projectId = req.body.projectId;
         const project = await Project.findById(projectId);
@@ -93,14 +103,14 @@ const createDatasetAndAdd2Project = async function (req, res, next) {
         }
 
         const file = req.files[0];
-        console.log(file);
         const extension = getFileExtension(file.originalname);
 
         const dataset = new Dataset({
             name: req.body.name,
             description: req.body.description,
             extension: extension,
-            projectId: projectId
+            projectId: projectId,
+            uploadedBy: authUser._id
         });
 
         const filePath = `./datasets/${projectId}-${dataset._id}.${extension}`;
@@ -168,9 +178,7 @@ const exploreProjects = async function (req, res, next) {
         sortOrder = sortOrder === 'desc' ? -1 : 1;
         search = search || '';
         tags = tags || '';
-
-        const regexSearch = new RegExp(search, 'i');
-
+        
         let queryCondition = { isPublic: true };
 
         if (search) {
@@ -184,7 +192,6 @@ const exploreProjects = async function (req, res, next) {
             queryCondition.tagIds = { $in: tagIdsList };
         }
         
-        console.log(queryCondition);
         const projects = await Project.find(queryCondition)
             .populate("datasetIds tagIds")
             .sort({ [sortBy]: sortOrder})
@@ -194,7 +201,7 @@ const exploreProjects = async function (req, res, next) {
         const totalProjects = await Project.countDocuments(queryCondition);
         const totalPages = Math.ceil(totalProjects / limit);
 
-        return res.status(200).json({ projects, totalPages });
+        return res.status(200).json({ projects, totalPages, totalProjects });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: 'Internal Server Error' });
@@ -296,18 +303,32 @@ const editProject = async function(req, res, next) {
         const id = req.authanticatedUserId;
         var authUser = await User.findById(id).select('-password');        
 
-        const { name, description, abstract, projectId, tagIds } = req.body;
+        const { name, description, abstract, projectId, tagIds} = req.body;
         const project = await Project.findById(projectId);
 
         if(id != project.ownerId.toString()){
             return res.status(404).json({ message: 'Only project owner can edit.' });
         }
+        const userEmails = req.body.userEmails;
+        const userList = await User.find({ email: { $in: userEmails } });
 
+        if (userList.length != userEmails.length) {
+            return res.status(400).json({ error: 'Some or all users are not found in db.' });
+        }
+
+        const collaboratorEmails = req.body.collaboratorEmails;
+
+        const collaboratorList = await User.find({ email: { $in: collaboratorEmails } });
+        if (collaboratorList.length != collaboratorEmails.length) {
+            return res.status(400).json({ error: 'Some or all collaborators are not found in db.' });
+        }
         const updatedProject = await Project.findByIdAndUpdate(projectId, {
             name: name,
             description: description,
             abstract: abstract,
-            tagIds: tagIds
+            tagIds: tagIds,
+            userIds: userList,
+            collaboratorIds: collaboratorList
         }, { new: true });
 
         if (!updatedProject) {
@@ -375,9 +396,21 @@ const deleteProject = async function (req, res, next) {
         console.error(error);
         return res.status(500).json({ message: 'Server Error' });
     }
-
-
 }
 
+const livePreview = async function (req, res, next){
+    const data = req.body.data;
 
-module.exports = { createProject, createDatasetAndAdd2Project, detailProject, exploreProjects, previewDataset, removeDataset, editProject, deleteProject, getFileExtension }
+    const columnNames = req.body.columnNames.split(',');
+    const columnActions = req.body.columnActions.split(',');
+
+    const anonymizationMethods = {};
+    columnNames.forEach((column, index) => {
+        anonymizationMethods[column] = columnActions[index];
+    });
+
+    const anonymizedData = anonymize(data, anonymizationMethods, null);
+    return res.status(200).json({anonymizedData});
+    
+}
+module.exports = { createProject, createDatasetAndAdd2Project, detailProject, exploreProjects, previewDataset, removeDataset, editProject, deleteProject, getFileExtension, livePreview }

@@ -178,4 +178,4 @@ function writeCSVFile(filePath, data) {
     });
 }
 
-module.exports = {anonymizeFile}
+module.exports = {anonymizeFile, anonymize}
