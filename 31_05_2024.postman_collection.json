@@ -1,0 +1,1008 @@
+{
+	"info": {
+		"_postman_id": "df9bd024-a461-4909-b7e9-67266e6e930d",
+		"name": "grad",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30363088"
+	},
+	"item": [
+		{
+			"name": "project-create",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjQ5ZTBhMTAxNDM2N2JjNGI2YmQxM2MiLCJpYXQiOjE3MTcxNTgwOTAsImV4cCI6MTc0ODcxNTY5MH0.4LgTxS38cxhD94jKjkRsNkMup3ooZQoIdqjQo8tetos",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"shared projects deneme\",\n    \"description\": \"shared projects deneme\",\n    \"abstract\" : \"shared projects deneme\",\n    \"isPublic\": true,\n    \"userEmails\": [\"aslany19@itu.edu.tr\"],\n    \"collaboratorEmails\": [\"yusuufaslan19@gmail.com\"], \n    \"tags\": [\"Anemia\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/project/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"project",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "project-detail",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFmYTFjODI5ZTEwZGI5NTE2MjlkMzgiLCJpYXQiOjE3MTMzNTcwOTEsImV4cCI6MTc0NDkxNDY5MX0.fdxuqOtqz7BXoW3Y0w-xPmjlQ1fhOyTRsq6GpWRwYK4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"projectId\":\"661fbdae3104d44668b3d819\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/project/detail",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"project",
+						"detail"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "project-explore",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjE0MDg4M2M2MGNiMzA3N2U2MzE5YjQiLCJpYXQiOjE3MTM2MDU0MTUsImV4cCI6MTc0NTE2MzAxNX0.fWGkUwk99UmXmzqJf4Wj_77FXNCR44lMn74WFiJ58xM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/project",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"project"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "project-live-preview",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjE0MDg4M2M2MGNiMzA3N2U2MzE5YjQiLCJpYXQiOjE3MTM2MDU0MTUsImV4cCI6MTc0NTE2MzAxNX0.fWGkUwk99UmXmzqJf4Wj_77FXNCR44lMn74WFiJ58xM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\" : [\n  {\n    \"id\": \"hashed_id_1\",\n    \"name\": \"John Doe\",\n    \"email\": \"masked_email_1@example.com\",\n    \"age\": 32,\n    \"gender\": \"Male\",\n    \"city\": \"New York\",\n    \"country\": \"USA\",\n    \"salary\": 55000,\n    \"education\": \"Bachelor's Degree\",\n    \"employment_status\": \"Employed\",\n    \"department\": \"Sales\",\n    \"hobby\": \"Reading\",\n    \"marital_status\": \"Married\",\n    \"children\": 2,\n    \"years_of_experience\": 5,\n    \"performance_rating\": 4.5,\n    \"last_promotion_date\": \"2023-05-12\",\n    \"manager\": \"Jane Smith\",\n    \"work_location\": \"Office\",\n    \"work_from_home_days\": 2,\n    \"start_date\": \"hashed_2018-07-15\",\n    \"team_size\": 10,\n    \"working_hours_per_day\": 8\n  },\n  {\n    \"id\": \"hashed_id_2\",\n    \"name\": \"Jane Smith\",\n    \"email\": \"masked_email_2@example.com\",\n    \"age\": 28,\n    \"gender\": \"Female\",\n    \"city\": \"Los Angeles\",\n    \"country\": \"USA\",\n    \"salary\": 60000,\n    \"education\": \"Master's Degree\",\n    \"employment_status\": \"Employed\",\n    \"department\": \"Marketing\",\n    \"hobby\": \"Photography\",\n    \"marital_status\": \"Single\",\n    \"children\": 0,\n    \"years_of_experience\": 7,\n    \"performance_rating\": 4.7,\n    \"last_promotion_date\": \"2022-11-20\",\n    \"manager\": \"David Johnson\",\n    \"work_location\": \"Remote\",\n    \"work_from_home_days\": 4,\n    \"start_date\": \"hashed_2016-09-20\",\n    \"team_size\": 8,\n    \"working_hours_per_day\": 7\n  },\n  {\n    \"id\": \"hashed_id_3\",\n    \"name\": \"Michael Brown\",\n    \"email\": \"masked_email_3@example.com\",\n    \"age\": 35,\n    \"gender\": \"Male\",\n    \"city\": \"Chicago\",\n    \"country\": \"USA\",\n    \"salary\": 70000,\n    \"education\": \"PhD\",\n    \"employment_status\": \"Employed\",\n    \"department\": \"Research & Development\",\n    \"hobby\": \"Playing Guitar\",\n    \"marital_status\": \"Married\",\n    \"children\": 1,\n    \"years_of_experience\": 10,\n    \"performance_rating\": 4.9,\n    \"last_promotion_date\": \"2021-03-10\",\n    \"manager\": \"Emily Wilson\",\n    \"work_location\": \"Office\",\n    \"work_from_home_days\": 1,\n    \"start_date\": \"hashed_2011-08-10\",\n    \"team_size\": 15,\n    \"working_hours_per_day\": 8\n  }\n    ],\n    \"columnNames\": \"id,name,email,age\",\n    \"columnActions\": \"mask,hash,randomize,empty\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/project/live-preview",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"project",
+						"live-preview"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "dataset-preview",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFmYTFjODI5ZTEwZGI5NTE2MjlkMzgiLCJpYXQiOjE3MTMzNTcwOTEsImV4cCI6MTc0NDkxNDY5MX0.fdxuqOtqz7BXoW3Y0w-xPmjlQ1fhOyTRsq6GpWRwYK4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"datasetId\":\"6625701bde8fc3d6245c25db\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/project/preview-dataset",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"project",
+						"preview-dataset"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "dataset-remove",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjIzYTI3ZDEyYWM4YTYxOGJiOTQ5MGIiLCJpYXQiOjE3MTQ4NjUyODAsImV4cCI6MTc0NjQyMjg4MH0.3NXlIpv_BzZmoG6MQCpF5X1SET7yxwwFkoP9A9Ewcik",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"datasetId\":\"6637682c2752f6ee7a37ccaa\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/project/remove-dataset",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"project",
+						"remove-dataset"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "dataset-add",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWZkYmEzOWI0ODczZWZhN2RmZDE3MGQiLCJpYXQiOjE3MTI1ODgxNjcsImV4cCI6MTc0NDE0NTc2N30.g7cFS8QM34P-H81Bed6-_cjqe8Rc0JwfwXlpE90xbkg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": []
+						},
+						{
+							"key": "name",
+							"value": "name",
+							"type": "text"
+						},
+						{
+							"key": "projectId",
+							"value": "6623a7963921303339505a1e",
+							"type": "text"
+						},
+						{
+							"key": "columnNames",
+							"value": "col1,col2,col3",
+							"type": "text"
+						},
+						{
+							"key": "columnActions",
+							"value": "mask,hash,none",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "description",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/project/add-dataset",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"project",
+						"add-dataset"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "proposal create",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjIzYTI5OTEyYWM4YTYxOGJiOTQ5MGYiLCJpYXQiOjE3MTM3Nzk3MzYsImV4cCI6MTc0NTMzNzMzNn0.sjgV_WeykVYAMFwCRO_nqvWMQgvr3ExoHOug-20mtLA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"proposalText\": \"shared projects deneme proposalı \",\n    \"potentialResearchBenefits\": \"shared projects deneme proposalı \",\n    \"projectId\": \"662633dc2a46a2647f8a8248\",\n    \"applicantUserIds\": [\"yusuufaslan19@gmail.com\"]\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/proposal/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"proposal",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "proposal evaluate",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjIzYTI3ZDEyYWM4YTYxOGJiOTQ5MGIiLCJpYXQiOjE3MTM3Nzk3ODcsImV4cCI6MTc0NTMzNzM4N30.kx2B1kCVHEtaznCdeFWJtSVZo5T8Z_t6g9f1bF3H6Po",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"proposalId\":\"6626343f2a46a2647f8a8250\",\n    \"verified\":\"accept\",\n    \"proposalReviewText\":\"proposalReviewText\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/proposal/evaluate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"proposal",
+						"evaluate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "proposal list",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWZkYmEzOWI0ODczZWZhN2RmZDE3MGQiLCJpYXQiOjE3MTI0MzYzMjQsImV4cCI6MTcxMjQzOTkyNH0.z2fXaARrwcztZ_jIi6cDYPnX93mhkh6bPitLydd9FeA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3838/api/proposal/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"proposal",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjIzYTI5OTEyYWM4YTYxOGJiOTQ5MGYiLCJpYXQiOjE3MTUxODc4OTYsImV4cCI6MTc0Njc0NTQ5Nn0.SY84sb1S5_9MRFCnlAx_O4xxvI36e1u4aZuUen8n-PE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\n    \"email\":\"selim.yurekli@outlook.com\",\n    \"password\": \"123456\"\n }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/user/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get institutions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3838/api/institution/get",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"institution",
+						"get"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add institution",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":\"itu\",\n    \"address\":\"maslak\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/institution/add",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"institution",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get tags",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3838/api/tag/get",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"tag",
+						"get"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add tag",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":\"Tag 5\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/tag/add",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"tag",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"selim.yurekli@outlook.com\",\n  \"password\": \"123456\",\n  \"name\": \"Selim\",\n  \"surname\": \"Yürekli\",\n  \"address\": \"Kayseri\",\n  \"role\": \"Student\",\n  \"institutionId\": \"661407f8abd7ce52da12003f\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/user/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"user",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "verify-user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"selim.yurekli@outlook.com\",\n    \"verificationCode\":\"426658\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/user/verify-user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"user",
+						"verify-user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user-owned projects",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjIzYTI3ZDEyYWM4YTYxOGJiOTQ5MGIiLCJpYXQiOjE3MTM2MTE3MjQsImV4cCI6MTc0NTE2OTMyNH0.EQQDrp1Sk29Q-x-uF_-CgF05fF67wMYaYKN0XbIwcp0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/user/owned-projects",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"user",
+						"owned-projects"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user-shared projects",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjIzYTI5OTEyYWM4YTYxOGJiOTQ5MGYiLCJpYXQiOjE3MTM2MTI5OTMsImV4cCI6MTc0NTE3MDU5M30.AX-9EtKNY2K-L227Uw-oCzm7N8-SQLnHh7hh-vw5Wzs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/user/shared-projects-to-user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"user",
+						"shared-projects-to-user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-user-name",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjE0MDg4M2M2MGNiMzA3N2U2MzE5YjQiLCJpYXQiOjE3MTM2MDU0MTUsImV4cCI6MTc0NTE2MzAxNX0.fWGkUwk99UmXmzqJf4Wj_77FXNCR44lMn74WFiJ58xM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"yurekli20@itu.edu.tr\",\n    \"verificationCode\":\"573384\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/user/name-from-id?userId=66140883c60cb3077e6319b4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"user",
+						"name-from-id"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "66140883c60cb3077e6319b4"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user detail",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjE0MDg4M2M2MGNiMzA3N2U2MzE5YjQiLCJpYXQiOjE3MTM2MDU0MTUsImV4cCI6MTc0NTE2MzAxNX0.fWGkUwk99UmXmzqJf4Wj_77FXNCR44lMn74WFiJ58xM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3838/api/user/detail",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"user",
+						"detail"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "project edit",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjQ5ZTBhMTAxNDM2N2JjNGI2YmQxM2MiLCJpYXQiOjE3MTcxNTgwOTAsImV4cCI6MTc0ODcxNTY5MH0.4LgTxS38cxhD94jKjkRsNkMup3ooZQoIdqjQo8tetos",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"projectId\":\"6659c920404238950188e598\",\n    \"name\": \"Project yeni name\",\n    \"description\": \"Project yeni description\",\n    \"abstract\":\"Project yeni abstract\",\n    \"tagIds\": [\"6614134cef5490456f0f0ddc\", \"66141350ef5490456f0f0de0\"],\n    \"userEmails\": [\"aslany19@itu.edu.tr\"],\n    \"collaboratorEmails\": []\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/project/edit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"project",
+						"edit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "forgot pass",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjIzYTI5OTEyYWM4YTYxOGJiOTQ5MGYiLCJpYXQiOjE3MTUxNTg0MTMsImV4cCI6MTc0NjcxNjAxM30.t2MM9eT_KzgXy8HwipxyBoaFITg9aJYwdBhwlUMW41w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"yurekli20@itu.edu.tr\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/user/forgot-password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"user",
+						"forgot-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "reset pass",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjIzYTI5OTEyYWM4YTYxOGJiOTQ5MGYiLCJpYXQiOjE3MTUxNTg0MTMsImV4cCI6MTc0NjcxNjAxM30.t2MM9eT_KzgXy8HwipxyBoaFITg9aJYwdBhwlUMW41w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"newPassword\":\"1234567\",\n    \"resetCode\":\"615204\",\n    \"email\":\"yurekli20@itu.edu.tr\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/user/reset-password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"user",
+						"reset-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "project delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjIzYTI5OTEyYWM4YTYxOGJiOTQ5MGYiLCJpYXQiOjE3MTUxODc4OTYsImV4cCI6MTc0Njc0NTQ5Nn0.SY84sb1S5_9MRFCnlAx_O4xxvI36e1u4aZuUen8n-PE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"projectId\":\"663cf93e4ebc4e94ce31609e\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/project/delete",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"project",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user edit",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjIzYTI5OTEyYWM4YTYxOGJiOTQ5MGYiLCJpYXQiOjE3MTUxNTg0MTMsImV4cCI6MTc0NjcxNjAxM30.t2MM9eT_KzgXy8HwipxyBoaFITg9aJYwdBhwlUMW41w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Selim\",\n    \"surname\": \"Yurekli\",\n    \"role\":\"Teacher\",\n    \"institutionId\": \"663b3e0425ea589aedc770f5\",\n    \"address\":\"kayseri\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3838/api/user/edit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3838",
+					"path": [
+						"api",
+						"user",
+						"edit"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
