@@ -112,18 +112,26 @@ const getUserOwnedProject = async function (req, res, next) {
   try {
 
     const id = req.authanticatedUserId;
-    var authUser = await User.findById(id, '-password').populate("ownedProjectIds ");;
+    var authUser = await User.findById(id, '-password')
+    .populate("ownedProjectIds collaboratedProjectIds")
 
     if (!authUser) {
       return res.status(400).json({ message: 'User not found.' });
     }
 
-    var projects = authUser.ownedProjectIds;
+    var ownedProjects = authUser.ownedProjectIds;
+    var collaboratedProjects = authUser.collaboratedProjectIds;
 
-    var populatedProjects = await Promise.all(projects.map(async (project) => {
+
+    var populatedOwnedProjects = await Promise.all(ownedProjects.map(async (project) => {
       return await project.populate("tagIds");
     }));
 
+    var populatedCollaboratedProjects = await Promise.all(collaboratedProjects.map(async (project) => {
+      return await project.populate("tagIds");
+    }));
+
+    var populatedProjects = populatedCollaboratedProjects.concat(populatedOwnedProjects);
 
     return res.status(200).json({ projects: populatedProjects });
   } catch (error) {
@@ -155,7 +163,7 @@ const getUserSharedProjects = async function (req, res, next) {
   try {
 
     const id = req.authanticatedUserId;
-    var authUser = await User.findById(id).select('-password').populate("sharedProjectIds collaboratedProjectIds");;
+    var authUser = await User.findById(id).select('-password').populate("sharedProjectIds");;
 
     if (!authUser) {
       return res.status(400).json({ message: 'User not found.' });

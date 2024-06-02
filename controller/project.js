@@ -253,8 +253,12 @@ const previewDataset = async function (req, res, next) {
                 const dataInCtr = dataIncolumnFormat[ctr];
 
                 const result = {};
-                dataInCtr.forEach((key, i) => {
-                    result[index[i]] = dataInCtr[i];
+                dataInCtr.forEach((value, i) => {
+                    if (Number.isInteger(value)) {
+                        result[index[i]] = value;
+                    } else {
+                        result[index[i]] = parseFloat(value).toFixed(2); // Format float values to 2 decimal places
+                    }
                 });
                 result['column'] = describedColumns[ctr]
                 jsonSummary.push(result);
@@ -305,8 +309,10 @@ const editProject = async function(req, res, next) {
 
         const { name, description, abstract, projectId, tagIds} = req.body;
         const project = await Project.findById(projectId);
-
-        if(id != project.ownerId.toString()){
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+        if(id != project.ownerId.toString() && !project.collaboratorIds.includes(id)){
             return res.status(404).json({ message: 'Only project owner can edit.' });
         }
         const userEmails = req.body.userEmails;
@@ -322,6 +328,41 @@ const editProject = async function(req, res, next) {
         if (collaboratorList.length != collaboratorEmails.length) {
             return res.status(400).json({ error: 'Some or all collaborators are not found in db.' });
         }
+
+        const userIds = userList.map(user => user._id);
+        const collaboratorIds = collaboratorList.map(collaborator => collaborator._id);
+
+        const removedCollaborators = project.collaboratorIds.filter(collaboratorId => !collaboratorIds.includes(collaboratorId.toString()));
+        const newCollaborators = collaboratorIds.filter(collaboratorId => !project.collaboratorIds.includes(collaboratorId.toString()));
+
+        if (removedCollaborators.length > 0) {
+            await User.updateMany(
+                { _id: { $in: removedCollaborators } },
+                { $pull: { collaboratedProjectIds: projectId } }
+            );
+        }
+        if (newCollaborators.length > 0) {
+            await User.updateMany(
+                { _id: { $in: newCollaborators } },
+                { $addToSet: { collaboratedProjectIds: projectId } }
+            );
+        }
+
+        const removedUserIds = project.userIds.filter(userId => !userIds.includes(userId.toString()));
+        const newUsers = userIds.filter(userId => !project.userIds.includes(userId.toString()));
+        if (removedUserIds.length > 0) {
+            await User.updateMany(
+                { _id: { $in: removedUserIds } },
+                { $pull: { sharedProjectIds: projectId } }
+            );
+        }
+        if (newUsers.length > 0) {
+            await User.updateMany(
+                { _id: { $in: newUsers } },
+                { $addToSet: { sharedProjectIds: projectId } }
+            );
+        }
+
         const updatedProject = await Project.findByIdAndUpdate(projectId, {
             name: name,
             description: description,
@@ -330,7 +371,7 @@ const editProject = async function(req, res, next) {
             userIds: userList,
             collaboratorIds: collaboratorList
         }, { new: true });
-
+        
         if (!updatedProject) {
             return res.status(404).json({ message: 'Project not found' });
         }
@@ -373,6 +414,12 @@ const deleteProject = async function (req, res, next) {
             { $pull: { ownedProjectIds: projectId } }
         );
 
+        var collaboratorIds = await User.find({ collaboratedProjectIds: projectId }, '_id');
+        await User.updateMany(
+            { _id: { $in: collaboratorIds } },
+            { $pull: { collaboratedProjectIds: projectId } }
+        );
+        
         const tagIds = await Tag.find({ projectIds: projectId }, '_id');
         await Tag.updateMany(
             { _id: { $in: tagIds } },
