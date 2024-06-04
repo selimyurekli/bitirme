@@ -42,7 +42,7 @@ function emptyString(str) {
         return "null";
     }
     //remove all column
-    return "";
+    return " ";
 }
 
 function maskString(str) {

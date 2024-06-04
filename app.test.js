@@ -548,15 +548,21 @@ describe('API project', () => {
                 description: 'Project Description',
                 abstract: 'Project Abstract',
                 isPublic: true,
-                tags: ['tag1', 'tag2']
+                tags: ['tag1', 'tag2'],
+                userEmails: ["test@test.com"],
+                collaboratorEmails: ["test@test.com"]
             };
 
             const mockUser = {
                 _id: userId,
                 ownedProjectIds: [],
+                sharedProjectIds: [],
+                collaboratedProjectIds: [],
                 save: jest.fn()
             };
 
+            const mockUsers = [];
+            mockUsers.push(mockUser);
             const mockTags = [
                 { _id: 'tag1', name: 'tag1', projectIds: [], save: jest.fn() },
                 { _id: 'tag2', name: 'tag2', projectIds: [], save: jest.fn() }
@@ -569,6 +575,7 @@ describe('API project', () => {
 
             User.findById.mockResolvedValue(mockUser);
             Tag.find.mockResolvedValue(mockTags);
+            User.find.mockResolvedValue(mockUsers);
             Project.prototype.save = jest.fn().mockResolvedValue(mockProject);
 
             const req = mockRequest(projectData, userId);
