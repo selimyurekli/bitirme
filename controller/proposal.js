@@ -109,7 +109,7 @@ const evaluateProposal = async function(req, res, next) {
         proposal.updated_at = Date.now();
         if(proposal.verified == 'accept'){
             if (proposal.applicantUserIds.length != 0){
-                project.userIds.push([proposal.applicantUserIds]);
+                project.userIds.push(...proposal.applicantUserIds);
 
                 const user1 = await User.updateMany(
                     { _id: { $in: proposal.applicantUserIds } }, // Find users by their IDs
